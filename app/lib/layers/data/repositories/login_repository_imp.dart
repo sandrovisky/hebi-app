@@ -1,8 +1,9 @@
-import 'package:app/layers/data/datasource/local/login_datasource_imp.dart';
+import 'package:app/layers/data/datasource/local/login_datasource_local_imp.dart';
+import 'package:app/layers/data/datasource/login_datasource.dart';
 import 'package:app/layers/domain/repositories/login_repository.dart';
 
 class LoginRepositoryImp extends ILoginRepository {
-  final LoginDatasourceImp _datasourceImp;
+  final ILoginDatasource _datasourceImp;
   LoginRepositoryImp(this._datasourceImp);
 
   @override

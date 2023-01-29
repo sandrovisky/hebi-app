@@ -1,43 +1,37 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:app/layers/presentation/pages/login/components/form_login.dart';
+import 'package:app/layers/presentation/pages/login/components/logo.dart';
+import 'package:app/layers/presentation/widgets/keyboard.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({
     Key? key,
-    required this.login,
   }) : super(key: key);
-  final Future<Map> Function({required String user, required String password})
-      login;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text('Hebi'),
+        actions: [
+          IconButton(onPressed: () {}, icon: const Icon(Icons.settings))
+        ],
+      ),
       body: Column(
         children: [
-          Expanded(
+          const Expanded(
             flex: 2,
-            child: Container(
-              color: Colors.green,
-            ),
+            child: Logo(),
           ),
+          const FormLogin(),
           Expanded(
-            flex: 1,
-            child: Container(
-              color: Colors.blue,
+            flex: 4,
+            child: ModifiedNumericKeyboard(
+              onKeyboardTap: (text) {},
             ),
           ),
-          Expanded(
-            flex: 3,
-            child: Container(
-              color: Colors.red,
-            ),
-          ),
-          FloatingActionButton(
-            onPressed: () async {
-              await login(user: 'adm', password: 'adm');
-            },
-            child: const Text('Login'),
-          )
         ],
       ),
     );

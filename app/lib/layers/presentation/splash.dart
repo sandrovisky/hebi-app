@@ -1,5 +1,7 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
-import 'package:app/layers/data/datasource/local/login_datasource_imp.dart';
+import 'package:app/core/device_info/device_info.dart';
+import 'package:app/core/inject/inject.dart';
+import 'package:app/layers/data/datasource/local/login_datasource_local_imp.dart';
 import 'package:app/layers/data/repositories/login_repository_imp.dart';
 import 'package:app/layers/presentation/router/login_router.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +16,12 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
+  void initState() {
+    DeviceInfo().init();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     return Center(
@@ -24,8 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       ),
       splashIconSize: width,
-      nextScreen:
-          LoginRouter(repository: LoginRepositoryImp(LoginDatasourceImp())),
+      nextScreen: Inject.get<LoginRouter>(),
     ));
   }
 }

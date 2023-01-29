@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:app/core/navigator/navigator.dart';
 import 'package:app/layers/domain/repositories/login_repository.dart';
 import 'package:flutter/material.dart';
 
@@ -7,29 +7,39 @@ abstract class ILoginController extends ChangeNotifier {
   bool get hasError;
   String get error;
 
-  Future<Map> login({required String user, required String password});
+  Future<void> login();
+  void clearError();
 }
 
 class LoginController extends ChangeNotifier implements ILoginController {
   final ILoginRepository repository;
   LoginController(
     this.repository,
-    this.onError,
   );
 
   bool _isLoading = false;
   String _error = '';
 
-  final Future<void> Function(String) onError;
-
-  _setIsLoading({bool value = false}) {
+  void _setIsLoading({bool value = false}) {
     _isLoading = value;
     notifyListeners();
   }
 
-  _setIsError({String value = ''}) {
+  void _setIsError({String value = ''}) async {
     _error = value;
-    onError(value);
+    await showDialog(
+        context: NavigationService.navigatorKey.currentContext!,
+        builder: (_) {
+          return AlertDialog(
+            title: Text(error),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(_),
+                child: const Text('Ok'),
+              )
+            ],
+          );
+        });
     notifyListeners();
   }
 
@@ -43,17 +53,21 @@ class LoginController extends ChangeNotifier implements ILoginController {
   bool get isLoading => _isLoading;
 
   @override
-  Future<Map> login({required String user, required String password}) async {
+  Future<void> login() async {
     try {
       _setIsLoading(value: true);
-      Map result = await repository.login(user: user, password: password);
-
-      return result;
+      print(isLoading);
+      Map result = await repository.login(user: '9998', password: '2706');
     } catch (e) {
       _setIsError(value: e.toString());
-      return {};
     } finally {
       _setIsLoading();
     }
+  }
+
+  @override
+  void clearError() {
+    _error = '';
+    notifyListeners();
   }
 }

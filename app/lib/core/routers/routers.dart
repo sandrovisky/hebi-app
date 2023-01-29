@@ -1,5 +1,7 @@
-import 'package:app/layers/data/datasource/local/login_datasource_imp.dart';
+import 'package:app/core/inject/inject.dart';
+import 'package:app/layers/data/datasource/local/login_datasource_local_imp.dart';
 import 'package:app/layers/data/repositories/login_repository_imp.dart';
+import 'package:app/layers/domain/repositories/login_repository.dart';
 import 'package:app/layers/presentation/router/login_router.dart';
 import 'package:app/layers/presentation/splash.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +11,7 @@ class Routers {
 
   static Map<String, Widget Function(BuildContext, dynamic)> routes = {
     '/': (_, args) => const SplashScreen(),
-    '/login': (_, args) =>
-        LoginRouter(repository: LoginRepositoryImp(LoginDatasourceImp())),
+    '/login': (_, args) => Inject.get<LoginRouter>()
   };
 
   static Route? generateRoutes(RouteSettings settings) {
