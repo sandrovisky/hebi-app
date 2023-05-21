@@ -1,6 +1,6 @@
 enum Enviroments {
-  DEVELOPMENT('http://localhost:7000/api/android', 'dev'),
-  PRODUCTION('https://hebi.com.br/api/android', 'prod');
+  development('http://localhost:7000/api/android', 'dev'),
+  production('https://hebi.com.br/api/android', 'prod');
 
   final String url;
   final String mode;

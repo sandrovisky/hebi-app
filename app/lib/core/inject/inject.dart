@@ -11,15 +11,15 @@ import 'package:get_it/get_it.dart';
 
 class Inject {
   static init() {
-    const _enviroment = String.fromEnvironment('mode', defaultValue: 'dev');
+    const enviroment = String.fromEnvironment('mode', defaultValue: 'dev');
     GetIt getIt = GetIt.instance;
 
     //datasource
     getIt.registerLazySingleton<ILoginDatasource>(() {
-      if (Enviroments.DEVELOPMENT.mode == _enviroment) {
-        return LoginDatasourceLocalImp(Enviroments.DEVELOPMENT.url);
-      } else if (Enviroments.PRODUCTION.mode == _enviroment) {
-        return LoginDatasourceRemoteImp(Enviroments.PRODUCTION.url);
+      if (Enviroments.development.mode == enviroment) {
+        return LoginDatasourceLocalImp(Enviroments.development.url);
+      } else if (Enviroments.production.mode == enviroment) {
+        return LoginDatasourceRemoteImp(Enviroments.production.url);
       }
       throw 'FALHA AO IDENTIFICAR AMBIENT';
     });

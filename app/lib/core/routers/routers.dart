@@ -1,7 +1,4 @@
 import 'package:app/core/inject/inject.dart';
-import 'package:app/layers/data/datasource/local/login_datasource_local_imp.dart';
-import 'package:app/layers/data/repositories/login_repository_imp.dart';
-import 'package:app/layers/domain/repositories/login_repository.dart';
 import 'package:app/layers/presentation/router/login_router.dart';
 import 'package:app/layers/presentation/splash.dart';
 import 'package:flutter/material.dart';
