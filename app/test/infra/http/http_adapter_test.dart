@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
@@ -15,25 +17,70 @@ class HttpAdapter {
     required String method,
     Map? body,
   }) async {
-    await client.post(Uri.parse(url));
+    final jsonBody = body == null ? null : jsonEncode(body);
+    final headers = {
+      'content-type': 'application/json',
+      'accept': 'application/json'
+    };
 
-    return {};
+    Response response = await client.post(
+      Uri.parse(url),
+      headers: headers,
+      body: jsonBody,
+    );
   }
 }
 
 void main() {
   group('post', () {
+    final client = ClientSpy();
+    final sut = HttpAdapter(client);
+    final url = faker.internet.httpsUrl();
     test('should call post with correct values', () async {
-      final client = ClientSpy();
-      final sut = HttpAdapter(client);
-      final url = faker.internet.httpsUrl();
+      when(() => client.post(
+            Uri.parse(url),
+            headers: any(named: 'headers'),
+            body: any(named: 'body'),
+          )).thenAnswer((_) async => Response('', 200));
 
-      when(() => client.post(Uri.parse(url)))
-          .thenAnswer((_) async => Response('', 200));
+      await sut.request(
+        url: url,
+        method: 'post',
+        body: {"any_key": "any_value"},
+      );
 
-      await sut.request(url: url, method: 'post');
+      verify(
+        () => client.post(
+          Uri.parse(url),
+          headers: {
+            'content-type': 'application/json',
+            'accept': 'application/json'
+          },
+          body: '{"any_key":"any_value"}',
+        ),
+      );
+    });
+    test('should call post without body', () async {
+      when(() => client.post(
+            Uri.parse(url),
+            headers: any(named: 'headers'),
+            body: any(named: 'body'),
+          )).thenAnswer((_) async => Response('', 200));
 
-      verify(() => client.post(Uri.parse(url)));
+      await sut.request(
+        url: url,
+        method: 'post',
+      );
+
+      verify(
+        () => client.post(
+          Uri.parse(url),
+          headers: {
+            'content-type': 'application/json',
+            'accept': 'application/json'
+          },
+        ),
+      );
     });
   });
 }
