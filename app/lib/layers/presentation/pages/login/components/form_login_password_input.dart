@@ -7,7 +7,7 @@ class FormLoginPasswordInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       obscureText: true,
-      //keyboardType: TextInputType.none,
+      keyboardType: TextInputType.none,
       decoration: InputDecoration(
         border: InputBorder.none,
         contentPadding: const EdgeInsets.fromLTRB(20, 0, 10, 5),

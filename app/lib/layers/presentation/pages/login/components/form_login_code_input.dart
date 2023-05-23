@@ -6,7 +6,7 @@ class FormLoginCodeInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      // keyboardType: TextInputType.none,
+      keyboardType: TextInputType.none,
       decoration: InputDecoration(
         border: InputBorder.none,
         contentPadding: const EdgeInsets.fromLTRB(20, 0, 10, 0),
