@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
@@ -15,7 +17,11 @@ class HttpAdapter {
     required String method,
     Map? body,
   }) async {
-    await client.post(Uri.parse(url));
+    final headers = {
+      'content-type': 'application/json',
+      'accept': 'application/json'
+    };
+    await client.post(Uri.parse(url), headers: headers, body: jsonEncode(body));
 
     return {};
   }
@@ -23,17 +29,29 @@ class HttpAdapter {
 
 void main() {
   group('post', () {
+    final client = ClientSpy();
+    final sut = HttpAdapter(client);
+    final url = faker.internet.httpsUrl();
     test('should call post with correct values', () async {
-      final client = ClientSpy();
-      final sut = HttpAdapter(client);
-      final url = faker.internet.httpsUrl();
-
-      when(() => client.post(Uri.parse(url)))
+      when(() => client.post(Uri.parse(url), headers: any(named: 'headers')))
           .thenAnswer((_) async => Response('', 200));
 
-      await sut.request(url: url, method: 'post');
+      await sut.request(
+        url: url,
+        method: 'post',
+        body: {'any_key': 'any_value'},
+      );
 
-      verify(() => client.post(Uri.parse(url)));
+      verify(
+        () => client.post(
+          Uri.parse(url),
+          headers: {
+            'content-type': 'application/json',
+            'accept': 'application/json'
+          },
+          body: "{'any_key': 'any_value'}",
+        ),
+      );
     });
   });
 }
