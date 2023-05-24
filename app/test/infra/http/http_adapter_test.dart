@@ -123,5 +123,22 @@ void main() {
         null,
       );
     });
+
+    test('should return null if post return 204 with no data', () async {
+      mockWithResponse(
+        204,
+        body: '',
+      );
+
+      final response = await sut.request(
+        url: url,
+        method: 'post',
+      );
+
+      expect(
+        response,
+        null,
+      );
+    });
   });
 }
