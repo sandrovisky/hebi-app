@@ -28,6 +28,8 @@ class HttpAdapter {
       headers: headers,
       body: jsonBody,
     );
+
+    return response.body.isEmpty ? null : jsonDecode(response.body);
   }
 }
 
@@ -36,13 +38,25 @@ void main() {
     final client = ClientSpy();
     final sut = HttpAdapter(client);
     final url = faker.internet.httpsUrl();
-    test('should call post with correct values', () async {
-      when(() => client.post(
+
+    mockCall() => when(
+          () => client.post(
             Uri.parse(url),
             headers: any(named: 'headers'),
             body: any(named: 'body'),
-          )).thenAnswer((_) async => Response('', 200));
+          ),
+        );
 
+    mockWithResponse(Response response) =>
+        mockCall().thenAnswer((_) async => response);
+
+    setUp(
+      () {
+        mockWithResponse(Response('', 200));
+      },
+    );
+
+    test('should call post with correct values', () async {
       await sut.request(
         url: url,
         method: 'post',
@@ -61,12 +75,6 @@ void main() {
       );
     });
     test('should call post without body', () async {
-      when(() => client.post(
-            Uri.parse(url),
-            headers: any(named: 'headers'),
-            body: any(named: 'body'),
-          )).thenAnswer((_) async => Response('', 200));
-
       await sut.request(
         url: url,
         method: 'post',
@@ -80,6 +88,34 @@ void main() {
             'accept': 'application/json'
           },
         ),
+      );
+    });
+
+    test('should return data if post return 200', () async {
+      mockWithResponse(
+        Response(jsonEncode({"any_key": "any_value"}), 200),
+      );
+
+      Map response = await sut.request(
+        url: url,
+        method: 'post',
+      );
+
+      expect(
+        response,
+        {"any_key": "any_value"},
+      );
+    });
+
+    test('should return null if post return 200 with no data', () async {
+      final response = await sut.request(
+        url: url,
+        method: 'post',
+      );
+
+      expect(
+        response,
+        null,
       );
     });
   });
