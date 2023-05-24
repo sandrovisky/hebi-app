@@ -113,10 +113,7 @@ void main() {
         method: 'post',
       );
 
-      expect(
-        response,
-        null,
-      );
+      verify(() => client.post(Uri.parse(url)));
     });
   });
 }
