@@ -28,8 +28,14 @@ class HttpAdapter {
       headers: headers,
       body: jsonBody,
     );
-
-    return response.body.isEmpty ? null : jsonDecode(response.body);
+    print(response.statusCode);
+    switch (response.statusCode) {
+      case 204:
+        return null;
+      case 200:
+        return response.body.isEmpty ? null : jsonDecode(response.body);
+      default:
+    }
   }
 }
 
@@ -51,7 +57,7 @@ void main() {
       int statusCode, {
       String body = '{"any_key":"any_value"}',
     }) {
-      mockCall().thenAnswer((_) async => Response(body, 200));
+      mockCall().thenAnswer((_) async => Response(body, statusCode));
     }
 
     setUp(
@@ -128,6 +134,22 @@ void main() {
       mockWithResponse(
         204,
         body: '',
+      );
+
+      final response = await sut.request(
+        url: url,
+        method: 'post',
+      );
+
+      expect(
+        response,
+        null,
+      );
+    });
+
+    test('should return null if post return 204 with data', () async {
+      mockWithResponse(
+        204,
       );
 
       final response = await sut.request(
