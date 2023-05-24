@@ -47,12 +47,16 @@ void main() {
           ),
         );
 
-    mockWithResponse(Response response) =>
-        mockCall().thenAnswer((_) async => response);
+    mockWithResponse(
+      int statusCode, {
+      String body = '{"any_key":"any_value"}',
+    }) {
+      mockCall().thenAnswer((_) async => Response(body, 200));
+    }
 
     setUp(
       () {
-        mockWithResponse(Response('', 200));
+        mockWithResponse(200);
       },
     );
 
@@ -92,10 +96,6 @@ void main() {
     });
 
     test('should return data if post return 200', () async {
-      mockWithResponse(
-        Response(jsonEncode({"any_key": "any_value"}), 200),
-      );
-
       Map response = await sut.request(
         url: url,
         method: 'post',
@@ -108,12 +108,20 @@ void main() {
     });
 
     test('should return null if post return 200 with no data', () async {
+      mockWithResponse(
+        200,
+        body: '',
+      );
+
       final response = await sut.request(
         url: url,
         method: 'post',
       );
 
-      verify(() => client.post(Uri.parse(url)));
+      expect(
+        response,
+        null,
+      );
     });
   });
 }
