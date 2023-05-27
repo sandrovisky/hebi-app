@@ -1,12 +1,18 @@
-import 'package:app/layers/presentation/controllers/login_controller.dart';
-import 'package:app/layers/presentation/pages/login/components/components.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+
+import 'package:app/layers/presentation/controllers/login_controller.dart';
+import 'package:app/layers/presentation/pages/login/components/components.dart';
+
+import './login_presenter.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({
     Key? key,
+    required this.presenter,
   }) : super(key: key);
+
+  final LoginPresenter? presenter;
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -43,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
                   TextFormField(
                     controller: codeController,
                     keyboardType: TextInputType.number,
-                    onChanged: (value) => setState(() {}),
+                    onChanged: widget.presenter!.validateCode,
                     onTap: () => _formKey.currentState!.deactivate(),
                     decoration: InputDecoration(
                       errorText:
@@ -79,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
                     obscureText: true,
                     controller: passwordController,
                     keyboardType: TextInputType.number,
-                    onChanged: (value) => setState(() {}),
+                    onChanged: widget.presenter!.validatePassword,
                     decoration: InputDecoration(
                       errorText: passwordErrorMessage.isEmpty
                           ? null

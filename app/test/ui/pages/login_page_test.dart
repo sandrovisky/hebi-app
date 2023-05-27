@@ -1,10 +1,17 @@
-import 'package:app/layers/presentation/pages/login/login_page.dart';
+import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+
+import 'package:app/layers/presentation/pages/pages.dart';
+
+class LoginPresenterSpy extends Mock implements LoginPresenter {}
 
 void main() {
+  LoginPresenterSpy presenter = LoginPresenterSpy();
+
   Future<void> loadPage(WidgetTester tester) async {
-    const loginPage = MaterialApp(home: LoginPage());
+    final loginPage = MaterialApp(home: LoginPage(presenter: presenter));
     await tester.pumpWidget(loginPage);
   }
 
@@ -43,6 +50,27 @@ void main() {
       final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
 
       expect(button.onPressed, null);
+    },
+  );
+
+  testWidgets(
+    'should call validate with correct values',
+    (WidgetTester tester) async {
+      await loadPage(tester);
+
+      final code = faker.currency.random.numberOfLength(6);
+
+      await tester.enterText(
+          find.widgetWithText(TextFormField, 'Codigo'), code);
+
+      verify(() => presenter.validateCode(code));
+
+      final password = faker.currency.random.numberOfLength(6);
+
+      await tester.enterText(
+          find.widgetWithText(TextFormField, 'Senha'), password);
+
+      verify(() => presenter.validatePassword(password));
     },
   );
 }

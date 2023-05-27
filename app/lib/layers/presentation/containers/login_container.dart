@@ -26,7 +26,9 @@ class LoginContainer extends StatelessWidget {
           );
         }
 
-        return const LoginPage();
+        return const LoginPage(
+          presenter: null,
+        );
       }),
     );
   }
