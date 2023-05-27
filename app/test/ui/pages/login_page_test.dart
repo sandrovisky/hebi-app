@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,8 +11,15 @@ class LoginPresenterSpy extends Mock implements LoginPresenter {}
 
 void main() {
   LoginPresenterSpy presenter = LoginPresenterSpy();
+  StreamController<String> codeErrorController = StreamController<String>();
+
+  tearDown(() {
+    codeErrorController.close();
+  });
 
   Future<void> loadPage(WidgetTester tester) async {
+    when(() => presenter.codeErrorStream)
+        .thenAnswer((_) => codeErrorController.stream);
     final loginPage = MaterialApp(home: LoginPage(presenter: presenter));
     await tester.pumpWidget(loginPage);
   }
@@ -71,6 +80,18 @@ void main() {
           find.widgetWithText(TextFormField, 'Senha'), password);
 
       verify(() => presenter.validatePassword(password));
+    },
+  );
+
+  testWidgets(
+    'should present error if code is invalid',
+    (WidgetTester tester) async {
+      await loadPage(tester);
+
+      codeErrorController.add('error');
+      await tester.pump();
+
+      expect(find.text('error'), findsOneWidget);
     },
   );
 }

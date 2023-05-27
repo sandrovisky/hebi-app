@@ -22,7 +22,6 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController codeController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  String codeErrorMessage = '';
   String passwordErrorMessage = '';
 
   bool test = true;
@@ -46,36 +45,41 @@ class _LoginPageState extends State<LoginPage> {
               padding: const EdgeInsets.only(left: 35, right: 35),
               child: Column(
                 children: <Widget>[
-                  TextFormField(
-                    controller: codeController,
-                    keyboardType: TextInputType.number,
-                    onChanged: widget.presenter!.validateCode,
-                    onTap: () => _formKey.currentState!.deactivate(),
-                    decoration: InputDecoration(
-                      errorText:
-                          codeErrorMessage.isEmpty ? null : codeErrorMessage,
-                      helperText: ' ',
-                      border: const OutlineInputBorder(),
-                      contentPadding: const EdgeInsets.fromLTRB(20, 0, 10, 0),
-                      hintText: "Codigo",
-                      filled: true,
-                      fillColor: Colors.white,
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(color: Colors.black, width: 2.0),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      enabledBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black, width: 2.0),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Campo obrigatório!';
-                      }
-                      return null;
-                    },
-                  ),
+                  StreamBuilder<String>(
+                      stream: widget.presenter!.codeErrorStream,
+                      builder: (context, snapshot) {
+                        return TextFormField(
+                          controller: codeController,
+                          keyboardType: TextInputType.number,
+                          onChanged: widget.presenter!.validateCode,
+                          onTap: () => _formKey.currentState!.deactivate(),
+                          decoration: InputDecoration(
+                            errorText: snapshot.hasData ? snapshot.data : null,
+                            helperText: ' ',
+                            border: const OutlineInputBorder(),
+                            contentPadding:
+                                const EdgeInsets.fromLTRB(20, 0, 10, 0),
+                            hintText: "Codigo",
+                            filled: true,
+                            fillColor: Colors.white,
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: Colors.black, width: 2.0),
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            enabledBorder: const OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.black, width: 2.0),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Campo obrigatório!';
+                            }
+                            return null;
+                          },
+                        );
+                      }),
                   const Padding(
                     padding: EdgeInsets.only(
                       top: 15,
