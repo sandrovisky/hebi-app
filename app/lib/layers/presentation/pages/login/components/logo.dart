@@ -9,7 +9,7 @@ class Logo extends StatelessWidget {
       padding: const EdgeInsets.only(top: 10, bottom: 10),
       child: Image.asset(
         "assets/images/load_snake.png",
-        fit: BoxFit.cover,
+        width: 150,
       ),
     );
   }
