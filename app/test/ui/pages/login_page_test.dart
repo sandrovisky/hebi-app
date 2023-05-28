@@ -10,16 +10,27 @@ import 'package:app/layers/presentation/pages/pages.dart';
 class LoginPresenterSpy extends Mock implements LoginPresenter {}
 
 void main() {
-  LoginPresenterSpy presenter = LoginPresenterSpy();
-  StreamController<String> codeErrorController = StreamController<String>();
+  late LoginPresenterSpy presenter;
+  StreamController<String?>? codeErrorController;
+  StreamController<String?>? passwordErrorController;
+
+  setUp(
+    () {
+      presenter = LoginPresenterSpy();
+      codeErrorController = StreamController<String?>();
+      passwordErrorController = StreamController<String?>();
+    },
+  );
 
   tearDown(() {
-    codeErrorController.close();
+    codeErrorController!.close();
   });
 
   Future<void> loadPage(WidgetTester tester) async {
     when(() => presenter.codeErrorStream)
-        .thenAnswer((_) => codeErrorController.stream);
+        .thenAnswer((_) => codeErrorController!.stream);
+    when(() => presenter.passwordErrorStream)
+        .thenAnswer((_) => passwordErrorController!.stream);
     final loginPage = MaterialApp(home: LoginPage(presenter: presenter));
     await tester.pumpWidget(loginPage);
   }
@@ -88,7 +99,59 @@ void main() {
     (WidgetTester tester) async {
       await loadPage(tester);
 
-      codeErrorController.add('error');
+      codeErrorController!.add('error');
+      await tester.pump();
+
+      expect(find.text('error'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'should present no error if code is valid',
+    (WidgetTester tester) async {
+      await loadPage(tester);
+
+      codeErrorController!.add(null);
+      await tester.pump();
+
+      final codeTexts = find.descendant(
+        of: find.widgetWithText(TextFormField, 'Codigo'),
+        matching: find.text(' '),
+      );
+
+      expect(
+        codeTexts,
+        findsOneWidget,
+      );
+    },
+  );
+
+  testWidgets(
+    'should present no error if code is valid2',
+    (WidgetTester tester) async {
+      await loadPage(tester);
+
+      codeErrorController!.add('');
+      await tester.pump();
+
+      final codeTexts = find.descendant(
+        of: find.widgetWithText(TextFormField, 'Codigo'),
+        matching: find.text(' '),
+      );
+
+      expect(
+        codeTexts,
+        findsOneWidget,
+      );
+    },
+  );
+
+  testWidgets(
+    'should present error if password is invalid',
+    (WidgetTester tester) async {
+      await loadPage(tester);
+
+      passwordErrorController!.add('error');
       await tester.pump();
 
       expect(find.text('error'), findsOneWidget);

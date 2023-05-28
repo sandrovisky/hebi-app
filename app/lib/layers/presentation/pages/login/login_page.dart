@@ -45,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
               padding: const EdgeInsets.only(left: 35, right: 35),
               child: Column(
                 children: <Widget>[
-                  StreamBuilder<String>(
+                  StreamBuilder<String?>(
                       stream: widget.presenter!.codeErrorStream,
                       builder: (context, snapshot) {
                         return TextFormField(
@@ -85,37 +85,41 @@ class _LoginPageState extends State<LoginPage> {
                       top: 15,
                     ),
                   ),
-                  TextFormField(
-                    obscureText: true,
-                    controller: passwordController,
-                    keyboardType: TextInputType.number,
-                    onChanged: widget.presenter!.validatePassword,
-                    decoration: InputDecoration(
-                      errorText: passwordErrorMessage.isEmpty
-                          ? null
-                          : passwordErrorMessage,
-                      helperText: ' ',
-                      border: const OutlineInputBorder(),
-                      contentPadding: const EdgeInsets.fromLTRB(20, 0, 10, 5),
-                      hintText: "Senha",
-                      filled: true,
-                      fillColor: Colors.white,
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            const BorderSide(color: Colors.black, width: 2.0),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      enabledBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black, width: 2.0),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Campo obrigatório!';
-                      }
-                      return 'teste';
-                    },
-                  ),
+                  StreamBuilder<String?>(
+                      stream: widget.presenter!.passwordErrorStream,
+                      builder: (context, snapshot) {
+                        return TextFormField(
+                          obscureText: true,
+                          controller: passwordController,
+                          keyboardType: TextInputType.number,
+                          onChanged: widget.presenter!.validatePassword,
+                          decoration: InputDecoration(
+                            errorText: snapshot.hasData ? snapshot.data : null,
+                            helperText: ' ',
+                            border: const OutlineInputBorder(),
+                            contentPadding:
+                                const EdgeInsets.fromLTRB(20, 0, 10, 5),
+                            hintText: "Senha",
+                            filled: true,
+                            fillColor: Colors.white,
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: Colors.black, width: 2.0),
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            enabledBorder: const OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.black, width: 2.0),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Campo obrigatório!';
+                            }
+                            return 'teste';
+                          },
+                        );
+                      }),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: ElevatedButton(
