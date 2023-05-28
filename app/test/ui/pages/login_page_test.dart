@@ -157,4 +157,44 @@ void main() {
       expect(find.text('error'), findsOneWidget);
     },
   );
+
+  testWidgets(
+    'should present no error if password is valid',
+    (WidgetTester tester) async {
+      await loadPage(tester);
+
+      passwordErrorController!.add(null);
+      await tester.pump();
+
+      final passwordTexts = find.descendant(
+        of: find.widgetWithText(TextFormField, 'Senha'),
+        matching: find.text(' '),
+      );
+
+      expect(
+        passwordTexts,
+        findsOneWidget,
+      );
+    },
+  );
+
+  testWidgets(
+    'should present no error if password is valid2',
+    (WidgetTester tester) async {
+      await loadPage(tester);
+
+      passwordErrorController!.add('');
+      await tester.pump();
+
+      final passwordTexts = find.descendant(
+        of: find.widgetWithText(TextFormField, 'Senha'),
+        matching: find.text(' '),
+      );
+
+      expect(
+        passwordTexts,
+        findsOneWidget,
+      );
+    },
+  );
 }
