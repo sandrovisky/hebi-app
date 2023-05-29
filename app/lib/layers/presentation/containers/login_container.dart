@@ -1,35 +1,33 @@
-import 'package:app/layers/presentation/controllers/login_controller.dart';
-import 'package:app/layers/presentation/pages/login/login_error.dart';
-import 'package:app/layers/presentation/pages/login/login_loading.dart';
-import 'package:app/layers/presentation/pages/login/login_page.dart';
 import 'package:flutter/material.dart';
+
+import '../pages/pages.dart';
 
 class LoginContainer extends StatelessWidget {
   const LoginContainer({
     Key? key,
-    required this.controller,
+    required this.presenter,
   }) : super(key: key);
-  final ILoginController controller;
+  final LoginPresenter presenter;
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: controller,
-      builder: ((context, child) {
-        if (controller.isLoading) {
+    return StreamBuilder(
+      stream: presenter.controllerStream,
+      builder: (context, snapshot) {
+        if (snapshot.data?.isLoading == true) {
           return const LoginLoadingPage();
         }
 
-        if (controller.hasError) {
+        if (snapshot.data?.hasError == true) {
           return LoginErrorPage(
-            error: controller.error,
+            error: snapshot.data!.error,
           );
         }
 
-        return const LoginPage(
-          presenter: null,
+        return LoginPage(
+          presenter: presenter,
         );
-      }),
+      },
     );
   }
 }

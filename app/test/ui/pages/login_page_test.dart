@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app/layers/presentation/containers/login_container.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,9 +12,11 @@ class LoginPresenterSpy extends Mock implements LoginPresenter {}
 
 void main() {
   late LoginPresenterSpy presenter;
-  StreamController<String?>? codeErrorController;
-  StreamController<String?>? passwordErrorController;
-  StreamController<bool>? isFormValidController;
+  late StreamController<String?> codeErrorController;
+  late StreamController<String?> passwordErrorController;
+  late StreamController<bool> isFormValidController;
+  late StreamController<BasicController> controller;
+  late BasicController basicController;
 
   setUp(
     () {
@@ -21,23 +24,28 @@ void main() {
       codeErrorController = StreamController<String?>();
       passwordErrorController = StreamController<String?>();
       isFormValidController = StreamController<bool>();
+      controller = StreamController<BasicController>();
+      basicController = BasicController();
+      controller.add(basicController);
     },
   );
 
   tearDown(() {
-    codeErrorController!.close();
-    passwordErrorController!.close();
-    isFormValidController!.close();
+    codeErrorController.close();
+    passwordErrorController.close();
+    isFormValidController.close();
+    controller.close();
   });
 
   Future<void> loadPage(WidgetTester tester) async {
     when(() => presenter.codeErrorStream)
-        .thenAnswer((_) => codeErrorController!.stream);
+        .thenAnswer((_) => codeErrorController.stream);
     when(() => presenter.passwordErrorStream)
-        .thenAnswer((_) => passwordErrorController!.stream);
+        .thenAnswer((_) => passwordErrorController.stream);
     when(() => presenter.isFormValidStream)
-        .thenAnswer((_) => isFormValidController!.stream);
-    final loginPage = MaterialApp(home: LoginPage(presenter: presenter));
+        .thenAnswer((_) => isFormValidController.stream);
+    when(() => presenter.controllerStream).thenAnswer((_) => controller.stream);
+    final loginPage = MaterialApp(home: LoginContainer(presenter: presenter));
     await tester.pumpWidget(loginPage);
   }
 
@@ -105,7 +113,7 @@ void main() {
     (WidgetTester tester) async {
       await loadPage(tester);
 
-      codeErrorController!.add('error');
+      codeErrorController.add('error');
       await tester.pump();
 
       expect(find.text('error'), findsOneWidget);
@@ -117,7 +125,7 @@ void main() {
     (WidgetTester tester) async {
       await loadPage(tester);
 
-      codeErrorController!.add(null);
+      codeErrorController.add(null);
       await tester.pump();
 
       final codeTexts = find.descendant(
@@ -137,7 +145,7 @@ void main() {
     (WidgetTester tester) async {
       await loadPage(tester);
 
-      codeErrorController!.add('');
+      codeErrorController.add('');
       await tester.pump();
 
       final codeTexts = find.descendant(
@@ -157,7 +165,7 @@ void main() {
     (WidgetTester tester) async {
       await loadPage(tester);
 
-      passwordErrorController!.add('error');
+      passwordErrorController.add('error');
       await tester.pump();
 
       expect(find.text('error'), findsOneWidget);
@@ -169,7 +177,7 @@ void main() {
     (WidgetTester tester) async {
       await loadPage(tester);
 
-      passwordErrorController!.add(null);
+      passwordErrorController.add(null);
       await tester.pump();
 
       final passwordTexts = find.descendant(
@@ -189,7 +197,7 @@ void main() {
     (WidgetTester tester) async {
       await loadPage(tester);
 
-      passwordErrorController!.add('');
+      passwordErrorController.add('');
       await tester.pump();
 
       final passwordTexts = find.descendant(
@@ -209,7 +217,7 @@ void main() {
     (WidgetTester tester) async {
       await loadPage(tester);
 
-      isFormValidController!.add(true);
+      isFormValidController.add(true);
       await tester.pump();
 
       final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
@@ -223,12 +231,25 @@ void main() {
     (WidgetTester tester) async {
       await loadPage(tester);
 
-      isFormValidController!.add(false);
+      isFormValidController.add(false);
       await tester.pump();
 
       final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
 
       expect(button.onPressed, isNull);
+    },
+  );
+
+  testWidgets(
+    'should present loading',
+    (WidgetTester tester) async {
+      await loadPage(tester);
+
+      basicController.setLoading(true);
+      controller.add(basicController);
+      await tester.pump();
+
+      expect(find.byType(LoginLoadingPage), findsOneWidget);
     },
   );
 }

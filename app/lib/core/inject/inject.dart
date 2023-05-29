@@ -35,8 +35,6 @@ class Inject {
         () => LoginController(getIt()));
 
     //containers
-    getIt.registerLazySingleton<LoginContainer>(
-        () => LoginContainer(controller: getIt()));
 
     getIt.registerLazySingleton<LoginRouter>(
         () => LoginRouter(repository: getIt()));
