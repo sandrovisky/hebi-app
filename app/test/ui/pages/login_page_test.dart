@@ -252,4 +252,20 @@ void main() {
       expect(find.byType(LoginLoadingPage), findsOneWidget);
     },
   );
+
+  testWidgets(
+    'should hide loading',
+    (WidgetTester tester) async {
+      await loadPage(tester);
+
+      basicController.setLoading(true);
+      controller.add(basicController);
+      await tester.pump();
+
+      controller.add(basicController);
+      await tester.pump();
+
+      expect(find.byType(LoginLoadingPage), findsNothing);
+    },
+  );
 }
