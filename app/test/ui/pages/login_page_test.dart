@@ -12,8 +12,8 @@ class LoginPresenterSpy extends Mock implements LoginPresenter {}
 
 void main() {
   late LoginPresenterSpy presenter;
-  late StreamController<String?> codeErrorController;
-  late StreamController<String?> passwordErrorController;
+  late StreamController<String> codeErrorController;
+  late StreamController<String> passwordErrorController;
   late StreamController<bool> isFormValidController;
   late StreamController<BasicController> controller;
   late BasicController basicController;
@@ -21,8 +21,8 @@ void main() {
   setUp(
     () {
       presenter = LoginPresenterSpy();
-      codeErrorController = StreamController<String?>();
-      passwordErrorController = StreamController<String?>();
+      codeErrorController = StreamController<String>();
+      passwordErrorController = StreamController<String>();
       isFormValidController = StreamController<bool>();
       controller = StreamController<BasicController>();
       basicController = BasicController();
@@ -125,7 +125,7 @@ void main() {
     (WidgetTester tester) async {
       await loadPage(tester);
 
-      codeErrorController.add(null);
+      codeErrorController.add('');
       await tester.pump();
 
       final codeTexts = find.descendant(
@@ -177,7 +177,7 @@ void main() {
     (WidgetTester tester) async {
       await loadPage(tester);
 
-      passwordErrorController.add(null);
+      passwordErrorController.add('');
       await tester.pump();
 
       final passwordTexts = find.descendant(
@@ -260,12 +260,25 @@ void main() {
 
       basicController.setLoading(true);
       controller.add(basicController);
-      await tester.pump();
 
+      basicController.setLoading(false);
       controller.add(basicController);
       await tester.pump();
 
       expect(find.byType(LoginLoadingPage), findsNothing);
+    },
+  );
+
+  testWidgets(
+    'should present error message if authentication fails',
+    (WidgetTester tester) async {
+      await loadPage(tester);
+
+      basicController.setError('main error');
+      controller.add(basicController);
+      await tester.pump();
+
+      expect(find.text('main error'), findsOneWidget);
     },
   );
 }

@@ -19,14 +19,10 @@ class LoginContainer extends StatelessWidget {
         }
 
         if (snapshot.data?.hasError == true) {
-          return LoginErrorPage(
-            error: snapshot.data!.error,
-          );
+          return LoginErrorPage(error: snapshot.data!.error);
         }
 
-        return LoginPage(
-          presenter: presenter,
-        );
+        return LoginPage(presenter: presenter);
       },
     );
   }
