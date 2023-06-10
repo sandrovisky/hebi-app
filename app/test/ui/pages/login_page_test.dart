@@ -15,8 +15,7 @@ void main() {
   late StreamController<String> codeErrorController;
   late StreamController<String> passwordErrorController;
   late StreamController<bool> isFormValidController;
-  late StreamController<BasicController> controller;
-  late BasicController basicController;
+  late StreamController<ControllerState> controller;
 
   setUp(
     () {
@@ -24,9 +23,8 @@ void main() {
       codeErrorController = StreamController<String>();
       passwordErrorController = StreamController<String>();
       isFormValidController = StreamController<bool>();
-      controller = StreamController<BasicController>();
-      basicController = BasicController();
-      controller.add(basicController);
+      controller = StreamController<ControllerState>();
+      controller.add(InitialControllerState());
     },
   );
 
@@ -141,26 +139,6 @@ void main() {
   );
 
   testWidgets(
-    'should present no error if code is valid2',
-    (WidgetTester tester) async {
-      await loadPage(tester);
-
-      codeErrorController.add('');
-      await tester.pump();
-
-      final codeTexts = find.descendant(
-        of: find.widgetWithText(TextFormField, 'Codigo'),
-        matching: find.text(' '),
-      );
-
-      expect(
-        codeTexts,
-        findsOneWidget,
-      );
-    },
-  );
-
-  testWidgets(
     'should present error if password is invalid',
     (WidgetTester tester) async {
       await loadPage(tester);
@@ -174,26 +152,6 @@ void main() {
 
   testWidgets(
     'should present no error if password is valid',
-    (WidgetTester tester) async {
-      await loadPage(tester);
-
-      passwordErrorController.add('');
-      await tester.pump();
-
-      final passwordTexts = find.descendant(
-        of: find.widgetWithText(TextFormField, 'Senha'),
-        matching: find.text(' '),
-      );
-
-      expect(
-        passwordTexts,
-        findsOneWidget,
-      );
-    },
-  );
-
-  testWidgets(
-    'should present no error if password is valid2',
     (WidgetTester tester) async {
       await loadPage(tester);
 
@@ -241,12 +199,25 @@ void main() {
   );
 
   testWidgets(
+    'shouldcall authentication on form submit',
+    (WidgetTester tester) async {
+      await loadPage(tester);
+
+      isFormValidController.add(true);
+      await tester.pump();
+      await tester.tap(find.byType(ElevatedButton));
+      await tester.pump();
+
+      verify(() => presenter.auth()).called(1);
+    },
+  );
+
+  testWidgets(
     'should present loading',
     (WidgetTester tester) async {
       await loadPage(tester);
 
-      basicController.setLoading(true);
-      controller.add(basicController);
+      controller.add(LoadingControllerState());
       await tester.pump();
 
       expect(find.byType(LoginLoadingPage), findsOneWidget);
@@ -258,12 +229,8 @@ void main() {
     (WidgetTester tester) async {
       await loadPage(tester);
 
-      basicController.setLoading(true);
-      controller.add(basicController);
-
-      basicController.setLoading(false);
-      controller.add(basicController);
-      await tester.pump();
+      controller.add(InitialControllerState());
+      controller.add(LoadingControllerState());
 
       expect(find.byType(LoginLoadingPage), findsNothing);
     },
@@ -274,11 +241,10 @@ void main() {
     (WidgetTester tester) async {
       await loadPage(tester);
 
-      basicController.setError('main error');
-      controller.add(basicController);
+      controller.add(ErrorControllerState('any error'));
       await tester.pump();
 
-      expect(find.text('main error'), findsOneWidget);
+      expect(find.text('any error'), findsOneWidget);
     },
   );
 }

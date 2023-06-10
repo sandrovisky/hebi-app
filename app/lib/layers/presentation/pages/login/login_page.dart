@@ -125,20 +125,10 @@ class _LoginPageState extends State<LoginPage> {
                     child: StreamBuilder<bool>(
                         stream: widget.presenter!.isFormValidStream,
                         builder: (context, snapshot) {
+                          print(snapshot.data);
                           return ElevatedButton(
                             onPressed: snapshot.data == true
-                                ? () {
-                                    if (_formKey.currentState!.validate()) {
-                                      GetIt.instance
-                                          .get<ILoginController>()
-                                          .login();
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                            content: Text('Processing Data')),
-                                      );
-                                    }
-                                  }
+                                ? widget.presenter!.auth
                                 : null,
                             child: const Text('LOGIN'),
                           );

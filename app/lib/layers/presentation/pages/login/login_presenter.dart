@@ -2,36 +2,22 @@ abstract class LoginPresenter {
   Stream<String> get codeErrorStream;
   Stream<String> get passwordErrorStream;
   Stream<bool> get isFormValidStream;
-  Stream<BasicController> get controllerStream;
+  Stream<ControllerState> get controllerStream;
   Stream<String> get mainErrorStream;
 
   void validateCode(String code);
   void validatePassword(String password);
+  void auth();
 }
 
-class BasicController {
-  bool _isLoading = false;
-  bool _hasError = false;
-  String _error = '';
+abstract class ControllerState {}
 
-  bool get isLoading => _isLoading;
-  bool get hasError => _hasError;
-  String get error => _error;
+class InitialControllerState implements ControllerState {}
 
-  void setLoading(bool value) {
-    _isLoading = value;
-  }
+class LoadingControllerState implements ControllerState {}
 
-  void _setHasError(bool value) {
-    _hasError = value;
-  }
+class ErrorControllerState implements ControllerState {
+  final String error;
 
-  void setError(String value) {
-    if (value.isEmpty) {
-      _setHasError(false);
-    } else {
-      _setHasError(true);
-    }
-    _error = value;
-  }
+  ErrorControllerState(this.error);
 }
