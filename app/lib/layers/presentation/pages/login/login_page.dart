@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 
-import 'package:app/layers/presentation/controllers/login_controller.dart';
 import 'package:app/layers/presentation/pages/login/components/components.dart';
 
 import './login_presenter.dart';
@@ -125,7 +123,6 @@ class _LoginPageState extends State<LoginPage> {
                     child: StreamBuilder<bool>(
                         stream: widget.presenter!.isFormValidStream,
                         builder: (context, snapshot) {
-                          print(snapshot.data);
                           return ElevatedButton(
                             onPressed: snapshot.data == true
                                 ? widget.presenter!.auth

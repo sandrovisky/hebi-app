@@ -7,7 +7,8 @@ abstract class LoginPresenter {
 
   void validateCode(String code);
   void validatePassword(String password);
-  void auth();
+  Future<void> auth();
+  void dispose();
 }
 
 abstract class ControllerState {}

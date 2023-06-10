@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../pages/pages.dart';
 
-class LoginContainer extends StatelessWidget {
+class LoginContainer extends StatefulWidget {
   const LoginContainer({
     Key? key,
     required this.presenter,
@@ -10,10 +10,21 @@ class LoginContainer extends StatelessWidget {
   final LoginPresenter presenter;
 
   @override
+  State<LoginContainer> createState() => _LoginContainerState();
+}
+
+class _LoginContainerState extends State<LoginContainer> {
+  @override
+  void dispose() {
+    super.dispose();
+    widget.presenter.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return StreamBuilder<ControllerState>(
       initialData: InitialControllerState(),
-      stream: presenter.controllerStream,
+      stream: widget.presenter.controllerStream,
       builder: (context, snapshot) {
         if (snapshot.data is LoadingControllerState) {
           print(snapshot);
@@ -25,7 +36,7 @@ class LoginContainer extends StatelessWidget {
           return LoginErrorPage(error: event.error);
         }
 
-        return LoginPage(presenter: presenter);
+        return LoginPage(presenter: widget.presenter);
       },
     );
   }
