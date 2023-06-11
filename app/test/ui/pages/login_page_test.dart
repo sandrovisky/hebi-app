@@ -38,7 +38,6 @@ void main() {
     passwordErrorController = StreamController<String>();
     isFormValidController = StreamController<bool>();
     basicController = StreamController<ControllerState>();
-    basicController.add(InitialControllerState());
   }
 
   void mockStreams() {
@@ -240,7 +239,6 @@ void main() {
     (WidgetTester tester) async {
       await loadPage(tester);
 
-      basicController.add(InitialControllerState());
       basicController.add(LoadingControllerState());
 
       expect(find.byType(LoginLoadingPage), findsNothing);

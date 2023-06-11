@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../core/basic_controller.dart';
 
@@ -24,22 +25,24 @@ class _LoginContainerState extends State<LoginContainer> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<ControllerState>(
-      initialData: InitialControllerState(),
-      stream: widget.presenter.controllerStream,
-      builder: (context, snapshot) {
-        if (snapshot.data is LoadingControllerState) {
-          print(snapshot);
-          return const LoginLoadingPage();
-        }
+    return Provider(
+      create: (context) => widget.presenter,
+      child: StreamBuilder<ControllerState>(
+        initialData: SuccessControllerState(),
+        stream: widget.presenter.controllerStream,
+        builder: (context, snapshot) {
+          if (snapshot.data is LoadingControllerState) {
+            return const LoginLoadingPage();
+          }
 
-        if (snapshot.data is ErrorControllerState) {
-          final event = snapshot.data as ErrorControllerState;
-          return LoginErrorPage(error: event.error);
-        }
+          if (snapshot.data is ErrorControllerState) {
+            final event = snapshot.data as ErrorControllerState;
+            return LoginErrorPage(error: event.error);
+          }
 
-        return LoginPage(presenter: widget.presenter);
-      },
+          return const LoginPage();
+        },
+      ),
     );
   }
 }

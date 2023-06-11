@@ -1,6 +1,6 @@
 abstract class ControllerState {}
 
-class InitialControllerState implements ControllerState {}
+class SuccessControllerState implements ControllerState {}
 
 class LoadingControllerState implements ControllerState {}
 
