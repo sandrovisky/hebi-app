@@ -121,12 +121,15 @@ class _LoginPageState extends State<LoginPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: StreamBuilder<bool>(
+                        initialData: false,
                         stream: widget.presenter!.isFormValidStream,
                         builder: (context, snapshot) {
+                          print(snapshot.data);
+                          print(widget.presenter);
                           return ElevatedButton(
                             onPressed: snapshot.data == true
                                 ? widget.presenter!.auth
-                                : null,
+                                : () {},
                             child: const Text('LOGIN'),
                           );
                         }),

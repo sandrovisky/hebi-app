@@ -15,34 +15,45 @@ void main() {
   late StreamController<String> codeErrorController;
   late StreamController<String> passwordErrorController;
   late StreamController<bool> isFormValidController;
-  late StreamController<ControllerState> controller;
+  late StreamController<ControllerState> basicController;
 
   setUp(
     () {
       presenter = LoginPresenterSpy();
-      codeErrorController = StreamController<String>();
-      passwordErrorController = StreamController<String>();
-      isFormValidController = StreamController<bool>();
-      controller = StreamController<ControllerState>();
-      controller.add(InitialControllerState());
     },
   );
 
-  tearDown(() {
+  tearDown(() {});
+
+  void closeStreams() {
     codeErrorController.close();
     passwordErrorController.close();
     isFormValidController.close();
-    controller.close();
-  });
+    basicController.close();
+  }
 
-  Future<void> loadPage(WidgetTester tester) async {
+  void initStreams() {
+    codeErrorController = StreamController<String>();
+    passwordErrorController = StreamController<String>();
+    isFormValidController = StreamController<bool>();
+    basicController = StreamController<ControllerState>();
+    basicController.add(InitialControllerState());
+  }
+
+  void mockStreams() {
     when(() => presenter.codeErrorStream)
         .thenAnswer((_) => codeErrorController.stream);
     when(() => presenter.passwordErrorStream)
         .thenAnswer((_) => passwordErrorController.stream);
     when(() => presenter.isFormValidStream)
         .thenAnswer((_) => isFormValidController.stream);
-    when(() => presenter.controllerStream).thenAnswer((_) => controller.stream);
+    when(() => presenter.controllerStream)
+        .thenAnswer((_) => basicController.stream);
+  }
+
+  Future<void> loadPage(WidgetTester tester) async {
+    initStreams();
+    mockStreams();
     final loginPage = MaterialApp(home: LoginContainer(presenter: presenter));
     await tester.pumpWidget(loginPage);
   }
@@ -206,7 +217,6 @@ void main() {
       isFormValidController.add(true);
       await tester.pump();
       await tester.tap(find.byType(ElevatedButton));
-      await tester.pump();
 
       verify(() => presenter.auth()).called(1);
     },
@@ -217,7 +227,7 @@ void main() {
     (WidgetTester tester) async {
       await loadPage(tester);
 
-      controller.add(LoadingControllerState());
+      basicController.add(LoadingControllerState());
       await tester.pump();
 
       expect(find.byType(LoginLoadingPage), findsOneWidget);
@@ -229,8 +239,8 @@ void main() {
     (WidgetTester tester) async {
       await loadPage(tester);
 
-      controller.add(InitialControllerState());
-      controller.add(LoadingControllerState());
+      basicController.add(InitialControllerState());
+      basicController.add(LoadingControllerState());
 
       expect(find.byType(LoginLoadingPage), findsNothing);
     },
@@ -241,7 +251,7 @@ void main() {
     (WidgetTester tester) async {
       await loadPage(tester);
 
-      controller.add(ErrorControllerState('any error'));
+      basicController.add(ErrorControllerState('any error'));
       await tester.pump();
 
       expect(find.text('any error'), findsOneWidget);

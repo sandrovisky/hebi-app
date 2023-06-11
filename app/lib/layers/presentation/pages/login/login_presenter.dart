@@ -7,7 +7,7 @@ abstract class LoginPresenter {
 
   void validateCode(String code);
   void validatePassword(String password);
-  Future<void> auth();
+  Future<void>? auth();
   void dispose();
 }
 
