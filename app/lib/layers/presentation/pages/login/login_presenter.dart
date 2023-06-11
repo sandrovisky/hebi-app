@@ -1,3 +1,5 @@
+import 'package:app/layers/presentation/core/basic_controller.dart';
+
 abstract class LoginPresenter {
   Stream<String> get codeErrorStream;
   Stream<String> get passwordErrorStream;
@@ -9,16 +11,4 @@ abstract class LoginPresenter {
   void validatePassword(String password);
   Future<void>? auth();
   void dispose();
-}
-
-abstract class ControllerState {}
-
-class InitialControllerState implements ControllerState {}
-
-class LoadingControllerState implements ControllerState {}
-
-class ErrorControllerState implements ControllerState {
-  final String error;
-
-  ErrorControllerState(this.error);
 }
