@@ -18,9 +18,11 @@ class StreamLoginPresenter {
 
   final _state = LoginState();
 
-  Stream<String> get codeErrorStream => _controller.stream.map(
+  Stream<String> get codeErrorStream => _controller.stream
+      .map(
         (state) => state.codeError,
-      );
+      )
+      .distinct();
 
   StreamLoginPresenter({required this.validation});
 
@@ -67,8 +69,10 @@ void main() {
   test('should emit code if validation fails', () {
     mockValidation(error: 'any error');
 
-    expectLater(sut.codeErrorStream, emits('any error'));
+    sut.codeErrorStream
+        .listen(expectAsync1((error) => expect(error, 'any error')));
 
+    sut.validateCode(code);
     sut.validateCode(code);
   });
 }
