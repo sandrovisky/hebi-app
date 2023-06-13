@@ -37,6 +37,19 @@ void main() {
   late StreamLoginPresenter sut;
   late String code;
 
+  mockValidationCall({String? field}) {
+    return when(
+      () => validation.validate(
+        field: field ?? any(named: 'field'),
+        value: any(named: 'value'),
+      ),
+    );
+  }
+
+  mockValidation({String? field, required String error}) {
+    mockValidationCall(field: field).thenReturn(error);
+  }
+
   setUp(() {
     validation = ValidationSpy();
     sut = StreamLoginPresenter(validation: validation);
@@ -44,12 +57,7 @@ void main() {
   });
 
   test('should call validation with correct code', () {
-    when(
-      () => validation.validate(
-        field: any(named: 'field'),
-        value: any(named: 'value'),
-      ),
-    ).thenReturn('');
+    mockValidation(error: '');
 
     sut.validateCode(code);
 
@@ -57,12 +65,7 @@ void main() {
   });
 
   test('should emit code if validation fails', () {
-    when(
-      () => validation.validate(
-        field: any(named: 'field'),
-        value: any(named: 'value'),
-      ),
-    ).thenReturn('any error');
+    mockValidation(error: 'any error');
 
     expectLater(sut.codeErrorStream, emits('any error'));
 
