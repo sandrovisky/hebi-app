@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -6,30 +8,64 @@ abstract class Validation {
   String validate({required String field, required String value});
 }
 
+class LoginState {
+  late String codeError;
+}
+
 class StreamLoginPresenter {
   final Validation validation;
+  final _controller = StreamController<LoginState>.broadcast();
+
+  final _state = LoginState();
+
+  Stream<String> get codeErrorStream => _controller.stream.map(
+        (state) => state.codeError,
+      );
 
   StreamLoginPresenter({required this.validation});
 
   void validateCode(String code) {
-    validation.validate(field: 'code', value: code);
+    _state.codeError = validation.validate(field: 'code', value: code);
+    _controller.add(_state);
   }
 }
 
 class ValidationSpy extends Mock implements Validation {}
 
 void main() {
-  test('should call validation with correct email', () {
-    final validation = ValidationSpy();
-    final sut = StreamLoginPresenter(validation: validation);
-    final code = faker.internet.random.integer(999999).toString();
+  late ValidationSpy validation;
+  late StreamLoginPresenter sut;
+  late String code;
+
+  setUp(() {
+    validation = ValidationSpy();
+    sut = StreamLoginPresenter(validation: validation);
+    code = faker.internet.random.integer(999999).toString();
+  });
+
+  test('should call validation with correct code', () {
     when(
       () => validation.validate(
         field: any(named: 'field'),
         value: any(named: 'value'),
       ),
-    ).thenAnswer((invocation) => '');
+    ).thenReturn('');
+
     sut.validateCode(code);
+
     verify(() => validation.validate(field: 'code', value: code)).called(1);
+  });
+
+  test('should emit code if validation fails', () {
+    when(
+      () => validation.validate(
+        field: any(named: 'field'),
+        value: any(named: 'value'),
+      ),
+    ).thenReturn('any error');
+
+    expectLater(sut.codeErrorStream, emits('any error'));
+
+    sut.validateCode(code);
   });
 }
