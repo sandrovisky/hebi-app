@@ -1,36 +1,9 @@
-import 'dart:async';
-
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-abstract class Validation {
-  String validate({required String field, required String value});
-}
-
-class LoginState {
-  late String codeError;
-}
-
-class StreamLoginPresenter {
-  final Validation validation;
-  final _controller = StreamController<LoginState>.broadcast();
-
-  final _state = LoginState();
-
-  Stream<String> get codeErrorStream => _controller.stream
-      .map(
-        (state) => state.codeError,
-      )
-      .distinct();
-
-  StreamLoginPresenter({required this.validation});
-
-  void validateCode(String code) {
-    _state.codeError = validation.validate(field: 'code', value: code);
-    _controller.add(_state);
-  }
-}
+import 'package:app/layers/presentation/presenters/presenters.dart';
+import 'package:app/layers/presentation/presenters/protocols/protocols.dart';
 
 class ValidationSpy extends Mock implements Validation {}
 
