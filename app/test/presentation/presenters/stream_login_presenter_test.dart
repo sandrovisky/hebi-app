@@ -39,11 +39,13 @@ void main() {
     verify(() => validation.validate(field: 'code', value: code)).called(1);
   });
 
-  test('should emit code if validation fails', () {
+  test('should emit code error if validation fails', () {
     mockValidation(error: 'any error');
 
     sut.codeErrorStream
         .listen(expectAsync1((error) => expect(error, 'any error')));
+    sut.isFormValidStream
+        .listen(expectAsync1((isValid) => expect(isValid, false)));
 
     sut.validateCode(code);
     sut.validateCode(code);

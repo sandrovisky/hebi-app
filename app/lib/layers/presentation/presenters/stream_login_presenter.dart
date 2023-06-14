@@ -4,6 +4,8 @@ import 'package:app/layers/presentation/presenters/protocols/protocols.dart';
 
 class LoginState {
   late String codeError;
+
+  bool get isFormValid => false;
 }
 
 class StreamLoginPresenter {
@@ -12,11 +14,11 @@ class StreamLoginPresenter {
 
   final _state = LoginState();
 
-  Stream<String> get codeErrorStream => _controller.stream
-      .map(
-        (state) => state.codeError,
-      )
-      .distinct();
+  Stream<String> get codeErrorStream =>
+      _controller.stream.map((state) => state.codeError).distinct();
+
+  Stream<bool> get isFormValidStream =>
+      _controller.stream.map((state) => state.isFormValid).distinct();
 
   StreamLoginPresenter({required this.validation});
 
