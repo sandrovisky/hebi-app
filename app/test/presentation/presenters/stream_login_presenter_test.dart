@@ -50,4 +50,15 @@ void main() {
     sut.validateCode(code);
     sut.validateCode(code);
   });
+
+  test('should emit a empty string if validation succeeds', () {
+    mockValidation(error: '');
+
+    sut.codeErrorStream.listen(expectAsync1((error) => expect(error, '')));
+    sut.isFormValidStream
+        .listen(expectAsync1((isValid) => expect(isValid, false)));
+
+    sut.validateCode(code);
+    sut.validateCode(code);
+  });
 }
