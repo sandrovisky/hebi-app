@@ -56,7 +56,6 @@ class LoginController extends ChangeNotifier implements ILoginController {
   Future<void> login() async {
     try {
       _setIsLoading(value: true);
-      print(isLoading);
       Map result = await repository.login(user: '9998', password: '2706');
     } catch (e) {
       _setIsError(value: e.toString());
