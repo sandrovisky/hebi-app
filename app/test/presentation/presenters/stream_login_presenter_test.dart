@@ -53,7 +53,7 @@ void main() {
     sut.validateCode(code);
   });
 
-  test('should emit a empty string if validation succeeds', () {
+  test('should emit a empty string if code validation succeeds', () {
     mockValidation(error: '');
 
     sut.codeErrorStream.listen(expectAsync1((error) => expect(error, '')));
@@ -81,5 +81,27 @@ void main() {
 
     sut.validatePassword(password);
     sut.validatePassword(password);
+  });
+
+  test('should emit a empty string if password validation succeeds', () {
+    sut.passwordErrorStream.listen(expectAsync1((error) => expect(error, '')));
+    sut.isFormValidStream
+        .listen(expectAsync1((isValid) => expect(isValid, false)));
+
+    sut.validatePassword(password);
+    sut.validatePassword(password);
+  });
+
+  test('should emit code error and passwords valid', () {
+    mockValidation(error: 'any error', field: 'code');
+
+    sut.passwordErrorStream.listen(expectAsync1((error) => expect(error, '')));
+    sut.codeErrorStream
+        .listen(expectAsync1((error) => expect(error, 'any error')));
+    sut.isFormValidStream
+        .listen(expectAsync1((isValid) => expect(isValid, false)));
+
+    sut.validatePassword(password);
+    sut.validateCode(code);
   });
 }
