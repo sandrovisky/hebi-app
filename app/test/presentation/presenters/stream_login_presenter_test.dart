@@ -11,6 +11,7 @@ void main() {
   late ValidationSpy validation;
   late StreamLoginPresenter sut;
   late String code;
+  late String password;
 
   mockValidationCall({String? field}) {
     return when(
@@ -29,11 +30,12 @@ void main() {
     validation = ValidationSpy();
     sut = StreamLoginPresenter(validation: validation);
     code = faker.internet.random.integer(999999).toString();
+    password = faker.internet.random.integer(999999).toString();
+
+    mockValidation(error: '');
   });
 
   test('should call validation with correct code', () {
-    mockValidation(error: '');
-
     sut.validateCode(code);
 
     verify(() => validation.validate(field: 'code', value: code)).called(1);
@@ -60,5 +62,12 @@ void main() {
 
     sut.validateCode(code);
     sut.validateCode(code);
+  });
+
+  test('should call validation with correct password', () {
+    sut.validatePassword(password);
+
+    verify(() => validation.validate(field: 'password', value: password))
+        .called(1);
   });
 }
