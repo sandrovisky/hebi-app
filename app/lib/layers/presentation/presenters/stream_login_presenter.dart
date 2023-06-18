@@ -3,10 +3,16 @@ import 'dart:async';
 import 'package:app/layers/presentation/presenters/protocols/protocols.dart';
 
 class LoginState {
-  late String codeError;
-  late String passwordError;
+  String code = '';
+  String password = '';
+  String codeError = '';
+  String passwordError = '';
 
-  bool get isFormValid => false;
+  bool get isFormValid =>
+      codeError.isEmpty &&
+      passwordError.isEmpty &&
+      code.isNotEmpty &&
+      password.isNotEmpty;
 }
 
 class StreamLoginPresenter {
@@ -27,11 +33,13 @@ class StreamLoginPresenter {
   void _update() => _controller.add(_state);
 
   void validateCode(String code) {
+    _state.code = code;
     _state.codeError = validation.validate(field: 'code', value: code);
     _update();
   }
 
   void validatePassword(String password) {
+    _state.password = password;
     _state.passwordError =
         validation.validate(field: 'password', value: password);
     _update();

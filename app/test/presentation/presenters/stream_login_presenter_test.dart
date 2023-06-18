@@ -104,4 +104,14 @@ void main() {
     sut.validatePassword(password);
     sut.validateCode(code);
   });
+
+  test('should emits a form valid = true', () async {
+    sut.passwordErrorStream.listen(expectAsync1((error) => expect(error, '')));
+    sut.codeErrorStream.listen(expectAsync1((error) => expect(error, '')));
+    expectLater(sut.isFormValidStream, emitsInOrder([false, true]));
+
+    sut.validatePassword(password);
+    await Future.delayed(Duration.zero);
+    sut.validateCode(code);
+  });
 }
