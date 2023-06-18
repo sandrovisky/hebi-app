@@ -1,3 +1,4 @@
+import 'package:app/layers/domain/usecases/authentication.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -7,11 +8,14 @@ import 'package:app/layers/presentation/presenters/protocols/protocols.dart';
 
 class ValidationSpy extends Mock implements Validation {}
 
+class AuthenticationSpy extends Mock implements Authentication {}
+
 void main() {
   late ValidationSpy validation;
   late StreamLoginPresenter sut;
   late String code;
   late String password;
+  late AuthenticationSpy authentication;
 
   mockValidationCall({String? field}) {
     return when(
@@ -27,8 +31,10 @@ void main() {
   }
 
   setUp(() {
+    authentication = AuthenticationSpy();
     validation = ValidationSpy();
-    sut = StreamLoginPresenter(validation: validation);
+    sut = StreamLoginPresenter(
+        validation: validation, authentication: authentication);
     code = faker.internet.random.integer(999999).toString();
     password = faker.internet.random.integer(999999).toString();
 
@@ -105,7 +111,7 @@ void main() {
     sut.validateCode(code);
   });
 
-  test('should emits a form valid = true', () async {
+  test('should emits a valid form', () async {
     sut.passwordErrorStream.listen(expectAsync1((error) => expect(error, '')));
     sut.codeErrorStream.listen(expectAsync1((error) => expect(error, '')));
     expectLater(sut.isFormValidStream, emitsInOrder([false, true]));
@@ -113,5 +119,16 @@ void main() {
     sut.validatePassword(password);
     await Future.delayed(Duration.zero);
     sut.validateCode(code);
+  });
+
+  test('should call Authentication with correct values', () async {
+    sut.validateCode(code);
+    sut.validatePassword(password);
+
+    await sut.auth();
+
+    verify(() => authentication.auth(
+            params: AuthenticationParams(user: code, password: password)))
+        .called(1);
   });
 }
