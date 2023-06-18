@@ -1,7 +1,9 @@
-import 'package:app/layers/domain/usecases/authentication.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+
+import 'package:app/layers/domain/entities/account_entity.dart';
+import 'package:app/layers/domain/usecases/authentication.dart';
 
 import 'package:app/layers/presentation/presenters/presenters.dart';
 import 'package:app/layers/presentation/presenters/protocols/protocols.dart';
@@ -13,9 +15,13 @@ class AuthenticationSpy extends Mock implements Authentication {}
 void main() {
   late ValidationSpy validation;
   late StreamLoginPresenter sut;
-  late String code;
-  late String password;
+  late String code = faker.internet.random.integer(999999).toString();
+  late String password = faker.internet.random.integer(999999).toString();
   late AuthenticationSpy authentication;
+
+  setUpAll(() {
+    registerFallbackValue(AuthenticationParams(password: password, user: code));
+  });
 
   mockValidationCall({String? field}) {
     return when(
@@ -30,15 +36,23 @@ void main() {
     mockValidationCall(field: field).thenReturn(error);
   }
 
+  mockAuthenticationCall() => when(
+        () => authentication.auth(params: any(named: 'params')),
+      );
+
+  mockAuthentication() {
+    mockAuthenticationCall().thenAnswer(
+        (invocation) async => AccountEntity(token: faker.guid.guid()));
+  }
+
   setUp(() {
     authentication = AuthenticationSpy();
     validation = ValidationSpy();
     sut = StreamLoginPresenter(
         validation: validation, authentication: authentication);
-    code = faker.internet.random.integer(999999).toString();
-    password = faker.internet.random.integer(999999).toString();
 
     mockValidation(error: '');
+    mockAuthentication();
   });
 
   test('should call validation with correct code', () {
@@ -130,5 +144,14 @@ void main() {
     verify(() => authentication.auth(
             params: AuthenticationParams(user: code, password: password)))
         .called(1);
+  });
+
+  test('should emit correct events on Authentication success', () async {
+    sut.validateCode(code);
+    sut.validatePassword(password);
+
+    expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
+
+    await sut.auth();
   });
 }
