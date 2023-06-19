@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:app/layers/domain/entities/account_entity.dart';
+import 'package:app/layers/domain/helpers/domain_error.dart';
 import 'package:app/layers/domain/usecases/authentication.dart';
 
 import 'package:app/layers/presentation/presenters/presenters.dart';
@@ -43,6 +44,10 @@ void main() {
   mockAuthentication() {
     mockAuthenticationCall().thenAnswer(
         (invocation) async => AccountEntity(token: faker.guid.guid()));
+  }
+
+  mockAuthenticationError(error) {
+    mockAuthenticationCall().thenThrow(error);
   }
 
   setUp(() {
@@ -151,6 +156,32 @@ void main() {
     sut.validatePassword(password);
 
     expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
+
+    await sut.auth();
+  });
+
+  test('should emit correct events on InvalidCredentialsError', () async {
+    mockAuthenticationError(DomainError.invalidCredentials);
+    sut.validateCode(code);
+    sut.validatePassword(password);
+
+    expectLater(sut.isLoadingStream, emits(false));
+
+    sut.mainErrorStream.listen(
+        expectAsync1((error) => expect(error, 'Credenciais inválidas.')));
+
+    await sut.auth();
+  });
+
+  test('Should emit correct events on UnexpectedError', () async {
+    mockAuthenticationError(DomainError.unexpected);
+    sut.validateCode(code);
+    sut.validatePassword(password);
+
+    expectLater(sut.isLoadingStream, emits(false));
+
+    sut.mainErrorStream
+        .listen(expectAsync1((error) => expect(error, 'Algo deu errado.')));
 
     await sut.auth();
   });
