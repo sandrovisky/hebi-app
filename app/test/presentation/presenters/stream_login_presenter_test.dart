@@ -69,9 +69,9 @@ void main() {
   test('should emit code error if validation fails', () {
     mockValidation(error: 'any error');
 
-    sut.codeErrorStream
+    sut.codeErrorStream!
         .listen(expectAsync1((error) => expect(error, 'any error')));
-    sut.isFormValidStream
+    sut.isFormValidStream!
         .listen(expectAsync1((isValid) => expect(isValid, false)));
 
     sut.validateCode(code);
@@ -81,8 +81,8 @@ void main() {
   test('should emit a empty string if code validation succeeds', () {
     mockValidation(error: '');
 
-    sut.codeErrorStream.listen(expectAsync1((error) => expect(error, '')));
-    sut.isFormValidStream
+    sut.codeErrorStream!.listen(expectAsync1((error) => expect(error, '')));
+    sut.isFormValidStream!
         .listen(expectAsync1((isValid) => expect(isValid, false)));
 
     sut.validateCode(code);
@@ -99,9 +99,9 @@ void main() {
   test('should emit password error if validation fails', () {
     mockValidation(error: 'any error');
 
-    sut.passwordErrorStream
+    sut.passwordErrorStream!
         .listen(expectAsync1((error) => expect(error, 'any error')));
-    sut.isFormValidStream
+    sut.isFormValidStream!
         .listen(expectAsync1((isValid) => expect(isValid, false)));
 
     sut.validatePassword(password);
@@ -109,8 +109,8 @@ void main() {
   });
 
   test('should emit a empty string if password validation succeeds', () {
-    sut.passwordErrorStream.listen(expectAsync1((error) => expect(error, '')));
-    sut.isFormValidStream
+    sut.passwordErrorStream!.listen(expectAsync1((error) => expect(error, '')));
+    sut.isFormValidStream!
         .listen(expectAsync1((isValid) => expect(isValid, false)));
 
     sut.validatePassword(password);
@@ -120,10 +120,10 @@ void main() {
   test('should emit code error and passwords valid', () {
     mockValidation(error: 'any error', field: 'code');
 
-    sut.passwordErrorStream.listen(expectAsync1((error) => expect(error, '')));
-    sut.codeErrorStream
+    sut.passwordErrorStream!.listen(expectAsync1((error) => expect(error, '')));
+    sut.codeErrorStream!
         .listen(expectAsync1((error) => expect(error, 'any error')));
-    sut.isFormValidStream
+    sut.isFormValidStream!
         .listen(expectAsync1((isValid) => expect(isValid, false)));
 
     sut.validatePassword(password);
@@ -131,8 +131,8 @@ void main() {
   });
 
   test('should emits a valid form', () async {
-    sut.passwordErrorStream.listen(expectAsync1((error) => expect(error, '')));
-    sut.codeErrorStream.listen(expectAsync1((error) => expect(error, '')));
+    sut.passwordErrorStream!.listen(expectAsync1((error) => expect(error, '')));
+    sut.codeErrorStream!.listen(expectAsync1((error) => expect(error, '')));
     expectLater(sut.isFormValidStream, emitsInOrder([false, true]));
 
     sut.validatePassword(password);
@@ -167,7 +167,7 @@ void main() {
 
     expectLater(sut.isLoadingStream, emits(false));
 
-    sut.mainErrorStream.listen(
+    sut.mainErrorStream!.listen(
         expectAsync1((error) => expect(error, 'Credenciais inválidas.')));
 
     await sut.auth();
@@ -180,9 +180,16 @@ void main() {
 
     expectLater(sut.isLoadingStream, emits(false));
 
-    sut.mainErrorStream
+    sut.mainErrorStream!
         .listen(expectAsync1((error) => expect(error, 'Algo deu errado.')));
 
     await sut.auth();
+  });
+
+  test('Should not emit after dispose', () async {
+    expectLater(sut.codeErrorStream, neverEmits(null));
+
+    sut.dispose();
+    sut.validateCode(code);
   });
 }
