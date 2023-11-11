@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class InputCode extends StatelessWidget {
-  const InputCode({
-    super.key,
-  });
+class CodeInput extends StatelessWidget {
+  const CodeInput({Key? key, required this.onChanged}) : super(key: key);
+
+  final Future<void> Function(String) onChanged;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       keyboardType: TextInputType.number,
-      onChanged: (value) {},
+      onChanged: onChanged,
       decoration: InputDecoration(
         errorText: ' ',
         helperText: ' ',

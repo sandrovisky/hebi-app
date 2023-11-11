@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class PasswordInput extends StatelessWidget {
-  const PasswordInput({
-    super.key,
-  });
+  const PasswordInput({Key? key, required this.onChanged}) : super(key: key);
+
+  final Function(String) onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +12,7 @@ class PasswordInput extends StatelessWidget {
       child: TextFormField(
         obscureText: true,
         keyboardType: TextInputType.number,
-        onChanged: (value) {},
+        onChanged: onChanged,
         decoration: InputDecoration(
           errorText: ' ',
           helperText: ' ',

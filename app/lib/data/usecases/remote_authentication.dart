@@ -1,4 +1,4 @@
-import 'package:app/domain/entities/entities.dart';
+import './/domain/entities/entities.dart';
 
 import '../../domain/helpers/helpers.dart';
 import '../../domain/usecases/usecases.dart';
@@ -23,7 +23,7 @@ class RemoteAuthentication implements Authentication {
         method: 'post',
         body: RemoteAuthenticationParams.fromDomain(params).toJson(),
       );
-      return RemoteAccountModel.fromJson(httpResponse).toEntity();
+      return RemoteAccountModel.fromMap(httpResponse).toEntity();
     } on HttpError catch (error) {
       if (error == HttpError.unauthorized) {
         throw DomainError.invalidCredentials;

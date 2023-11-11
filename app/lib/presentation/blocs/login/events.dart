@@ -13,3 +13,5 @@ class UserChangeLoginEvent extends LoginEvent {
 }
 
 class AuthLoginEvent extends LoginEvent {}
+
+class ClearErrorLoginEvent extends LoginEvent {}

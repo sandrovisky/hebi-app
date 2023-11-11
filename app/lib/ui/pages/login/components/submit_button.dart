@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
-class SubmitButton extends StatelessWidget {
-  const SubmitButton({super.key});
+class LoginButton extends StatelessWidget {
+  const LoginButton({super.key, required this.onPressed});
+
+  final Future<void> Function() onPressed;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: onPressed,
         child: const Text('LOGIN'),
       ),
     );

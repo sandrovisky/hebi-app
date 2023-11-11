@@ -1,43 +1,33 @@
 import 'dart:io';
-
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class DeviceInfo {
-  void init() async {
+  Future<Map> init() async {
     final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
     late Map<String, dynamic> deviceData;
 
-    try {
-      if (kIsWeb) {
-        WebBrowserInfo deviceInfo = await deviceInfoPlugin.webBrowserInfo;
-        deviceData = _readWebBrowserInfo(deviceInfo);
-      } else {
-        if (Platform.isAndroid) {
-          AndroidDeviceInfo deviceInfo = await deviceInfoPlugin.androidInfo;
-          deviceData = _readAndroidBuildData(deviceInfo);
-        } else if (Platform.isIOS) {
-          IosDeviceInfo deviceInfo = await deviceInfoPlugin.iosInfo;
-          deviceData = _readIosDeviceInfo(deviceInfo);
-        } else if (Platform.isWindows) {
-          WindowsDeviceInfo deviceInfo = await deviceInfoPlugin.windowsInfo;
-          deviceData = _readWindowsDeviceInfo(deviceInfo);
-        }
+    if (kIsWeb) {
+      WebBrowserInfo deviceInfo = await deviceInfoPlugin.webBrowserInfo;
+      deviceData = _readWebBrowserInfo(deviceInfo);
+    } else {
+      if (Platform.isAndroid) {
+        AndroidDeviceInfo deviceInfo = await deviceInfoPlugin.androidInfo;
+        deviceData = _readAndroidBuildData(deviceInfo);
+      } else if (Platform.isIOS) {
+        IosDeviceInfo deviceInfo = await deviceInfoPlugin.iosInfo;
+        deviceData = _readIosDeviceInfo(deviceInfo);
+      } else if (Platform.isWindows) {
+        WindowsDeviceInfo deviceInfo = await deviceInfoPlugin.windowsInfo;
+        deviceData = _readWindowsDeviceInfo(deviceInfo);
       }
-    } on PlatformException {
-      deviceData = <String, dynamic>{
-        'Error:': 'Failed to get platform version.'
-      };
     }
+    return deviceData;
   }
 
   Map<String, dynamic> _readAndroidBuildData(
     AndroidDeviceInfo build,
   ) {
-    saveDeviceInfo(build.model);
     return <String, dynamic>{
       'version.securityPatch': build.version.securityPatch,
       'version.sdkInt': build.version.sdkInt,
@@ -79,7 +69,6 @@ class DeviceInfo {
   Map<String, dynamic> _readIosDeviceInfo(
     IosDeviceInfo data,
   ) {
-    saveDeviceInfo(data.utsname.machine!);
     return <String, dynamic>{
       'name': data.name,
       'systemName': data.systemName,
@@ -99,7 +88,6 @@ class DeviceInfo {
   Map<String, dynamic> _readWebBrowserInfo(
     WebBrowserInfo data,
   ) {
-    saveDeviceInfo(data.userAgent!);
     return <String, dynamic>{
       'browserName': describeEnum(data.browserName),
       'appCodeName': data.appCodeName,
@@ -122,7 +110,6 @@ class DeviceInfo {
   Map<String, dynamic> _readWindowsDeviceInfo(
     WindowsDeviceInfo data,
   ) {
-    saveDeviceInfo('${data.userName}/${data.computerName}');
     return <String, dynamic>{
       'numberOfCores': data.numberOfCores,
       'computerName': data.computerName,
@@ -150,16 +137,5 @@ class DeviceInfo {
       'releaseId': data.releaseId,
       'deviceId': data.deviceId,
     };
-  }
-
-  void saveDeviceInfo(String model) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-    if (!prefs.containsKey('device_info')) {
-      final DateTime now = DateTime.now();
-      final DateFormat formatter = DateFormat('yyyy-MM-dd');
-      final String formatted = formatter.format(now);
-      await prefs.setString('device_info', '$model/$formatted');
-    }
   }
 }

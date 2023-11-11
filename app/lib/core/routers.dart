@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:app/presentation/routers/login_router.dart';
-import 'package:app/presentation/splash.dart';
+import './/ui/pages/splash/splash_page.dart';
+import './/ui/routers/routers.dart';
 
 class Routers {
   static String get initialRoute => '/';

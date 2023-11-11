@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
+import './/presentation/blocs/login/bloc.dart';
+import './/presentation/blocs/login/events.dart';
+
 import './components/components.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({
-    Key? key,
-  }) : super(key: key);
+  const LoginPage({Key? key, required this.bloc}) : super(key: key);
+
+  final LoginBloc bloc;
 
   @override
   Widget build(BuildContext context) {
@@ -17,17 +20,27 @@ class LoginPage extends StatelessWidget {
           IconButton(onPressed: () {}, icon: const Icon(Icons.settings))
         ],
       ),
-      body: const Column(
+      body: Column(
         children: [
-          Logo(),
+          const Logo(),
           Form(
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 35),
+              padding: const EdgeInsets.symmetric(vertical: 35),
               child: Column(
                 children: <Widget>[
-                  InputCode(),
-                  PasswordInput(),
-                  SubmitButton(),
+                  CodeInput(
+                    onChanged: (user) async => bloc.add(
+                      UserChangeLoginEvent(user),
+                    ),
+                  ),
+                  PasswordInput(
+                    onChanged: (password) async => bloc.add(
+                      PasswordChangeLoginEvent(password),
+                    ),
+                  ),
+                  LoginButton(
+                    onPressed: () async => bloc.add(AuthLoginEvent()),
+                  ),
                 ],
               ),
             ),

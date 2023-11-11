@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
-import 'package:app/core/core.dart';
+import './/core/core.dart';
+import './/presentation/blocs/login/bloc.dart';
 
 void main() {
   Inject.init();
   runApp(MultiProvider(
-    providers: [],
+    providers: [
+      Provider(create: (context) => DeviceInfo()),
+      BlocProvider(
+        create: (context) => LoginBloc(),
+      )
+    ],
     child: const MyApp(),
   ));
 }

@@ -1,20 +1,22 @@
 import 'package:bloc/bloc.dart';
 
-import 'package:app/blocs/login/events.dart';
-import 'package:app/blocs/login/states.dart';
-import 'package:app/data/repositories/repositories.dart';
+import './/presentation/blocs/login/events.dart';
+import './/presentation/blocs/login/states.dart';
+import './/data/repositories/repositories.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final ILoginRepository _loginRepository;
+  //final ILoginRepository _loginRepository;
 
   FormLoginState form = FormLoginState();
 
-  LoginBloc(this._loginRepository) : super(InitialLoginState()) {
+  LoginBloc() : super(FormLoginState()) {
     on<PasswordChangeLoginEvent>(_passwordEvent);
 
     on<UserChangeLoginEvent>(_userEvent);
 
     on<AuthLoginEvent>(_authEvent);
+
+    on<ClearErrorLoginEvent>(_clearError);
   }
 
   _passwordEvent(PasswordChangeLoginEvent event, Emitter<LoginState> emit) {
@@ -28,6 +30,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   _authEvent(AuthLoginEvent event, Emitter<LoginState> emit) async {
     emit(LoadingLoginState());
     await Future.delayed(const Duration(seconds: 2));
-    emit(SuccessLoginState());
+    emit(form);
+  }
+
+  _clearError(ClearErrorLoginEvent event, Emitter<LoginState> emit) {
+    emit(form);
   }
 }

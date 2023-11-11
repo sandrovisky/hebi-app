@@ -1,13 +1,16 @@
-abstract class LoginState {}
+import './/ui/pages/error/state.dart';
 
-class InitialLoginState extends LoginState {}
+sealed class LoginState {}
 
 class LoadingLoginState extends LoginState {}
 
-class ErrorLoginState extends LoginState {
+class ErrorLoginState extends LoginState implements ErrorState {
   final String error;
 
   ErrorLoginState(this.error);
+
+  @override
+  String get message => error;
 }
 
 class SuccessLoginState extends LoginState {}
