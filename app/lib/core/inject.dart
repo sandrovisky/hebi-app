@@ -1,0 +1,3 @@
+class Inject {
+  static init() {}
+}
