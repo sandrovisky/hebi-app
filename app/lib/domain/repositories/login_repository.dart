@@ -1,3 +1,6 @@
+import './/domain/entities/account_entity.dart';
+import './/domain/usecases/usecases.dart';
+
 abstract class ILoginRepository {
-  Future<Map> login({required String user, required String password});
+  Future<AccountEntity> auth(AuthenticationParams authenticationParams);
 }

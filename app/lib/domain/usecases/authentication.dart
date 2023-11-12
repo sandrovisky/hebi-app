@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import '../entities/account_entity.dart';
 
 abstract class Authentication {
-  Future<AccountEntity>? auth({required AuthenticationParams params});
+  Future<AccountEntity> auth(AuthenticationParams params);
 }
 
 class AuthenticationParams extends Equatable {

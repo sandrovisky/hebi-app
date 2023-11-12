@@ -1,35 +1,23 @@
+import './/data/http/http.dart';
 import './/domain/entities/entities.dart';
-
-import '../../domain/helpers/helpers.dart';
-import '../../domain/usecases/usecases.dart';
-
-import '../models/models.dart';
-import '../http/http.dart';
+import './/domain/helpers/helpers.dart';
+import './/domain/repositories/repositories.dart';
+import './/domain/usecases/usecases.dart';
 
 class RemoteAuthentication implements Authentication {
-  final HttpClient httpClient;
-  final String url;
+  final ILoginRepository loginRepository;
 
-  RemoteAuthentication({
-    required this.httpClient,
-    required this.url,
-  });
+  RemoteAuthentication({required this.loginRepository});
 
   @override
-  Future<AccountEntity>? auth({required AuthenticationParams params}) async {
+  Future<AccountEntity> auth(AuthenticationParams params) async {
     try {
-      final httpResponse = await httpClient.request(
-        url: url,
-        method: 'post',
-        body: RemoteAuthenticationParams.fromDomain(params).toJson(),
-      );
-      return RemoteAccountModel.fromMap(httpResponse).toEntity();
+      final accountEntity = await loginRepository.auth(params);
+      return accountEntity;
     } on HttpError catch (error) {
-      if (error == HttpError.unauthorized) {
-        throw DomainError.invalidCredentials;
-      } else {
-        throw DomainError.unexpected;
-      }
+      throw error == HttpError.unauthorized
+          ? DomainError.invalidCredentials
+          : DomainError.unexpected;
     }
   }
 }

@@ -1,4 +1,5 @@
-import './/ui/pages/error/state.dart';
+import './/ui/helpers/errors/errors.dart';
+import './/ui/pages/error/error.dart';
 
 sealed class LoginState {}
 
@@ -18,23 +19,23 @@ class SuccessLoginState extends LoginState {}
 class FormLoginState extends LoginState {
   final String user;
   final String password;
-  final String userError;
-  final String passwordError;
+  final UIError? userError;
+  final UIError? passwordError;
   final bool isFormValid;
 
   FormLoginState({
     this.user = '',
     this.password = '',
-    this.userError = '',
-    this.passwordError = '',
+    this.userError,
+    this.passwordError,
     this.isFormValid = false,
   });
 
   FormLoginState copyWith({
     String? user,
     String? password,
-    String? userError,
-    String? passwordError,
+    UIError? userError,
+    UIError? passwordError,
     bool? isFormValid,
   }) {
     return FormLoginState(

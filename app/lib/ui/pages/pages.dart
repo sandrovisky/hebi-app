@@ -1,2 +1,3 @@
 export './login/login_page.dart';
-export './login/login_loading.dart';
+export './loading/loading.dart';
+export './error/error.dart';

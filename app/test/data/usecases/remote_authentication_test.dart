@@ -8,10 +8,10 @@ import 'package:app/domain/usecases/usecases.dart';
 import 'package:app/data/http/http.dart';
 import 'package:app/data/usecases/usecases.dart';
 
-class HttpClientSpy extends Mock implements HttpClient {}
+class IHttpClientSpy extends Mock implements IHttpClient {}
 
 void main() {
-  final httpClient = HttpClientSpy();
+  final httpClient = IHttpClientSpy();
   final url = faker.internet.httpUrl();
   final sut = RemoteAuthentication(httpClient: httpClient, url: url);
   final params = AuthenticationParams(
@@ -29,7 +29,7 @@ void main() {
 
   mockHttpError(HttpError error) => mockRequest().thenThrow(error);
 
-  test('should call HttpCliente with correct values', () async {
+  test('should call IHttpCliente with correct values', () async {
     final accessToken = faker.guid.guid();
     mockHttpData({'token': accessToken});
 
@@ -43,7 +43,7 @@ void main() {
     );
   });
 
-  test('should throw UnexpectedError if HttpClient return 400', () async {
+  test('should throw UnexpectedError if IHttpClient return 400', () async {
     mockHttpError(HttpError.badRequest);
 
     final future = sut.auth(params: params);
@@ -51,7 +51,7 @@ void main() {
     expect(future, throwsA(DomainError.unexpected));
   });
 
-  test('should throw UnexpectedError if HttpClient return 404', () async {
+  test('should throw UnexpectedError if IHttpClient return 404', () async {
     mockHttpError(HttpError.notFound);
 
     final future = sut.auth(params: params);
@@ -59,7 +59,7 @@ void main() {
     expect(future, throwsA(DomainError.unexpected));
   });
 
-  test('should throw UnexpectedError if HttpClient return 500', () async {
+  test('should throw UnexpectedError if IHttpClient return 500', () async {
     mockHttpError(HttpError.serverError);
 
     final future = sut.auth(params: params);
@@ -67,7 +67,7 @@ void main() {
     expect(future, throwsA(DomainError.unexpected));
   });
 
-  test('should throw InvalidCredentialsError if HttpClient return 401',
+  test('should throw InvalidCredentialsError if IHttpClient return 401',
       () async {
     mockHttpError(HttpError.unauthorized);
 
@@ -76,7 +76,7 @@ void main() {
     expect(future, throwsA(DomainError.invalidCredentials));
   });
 
-  test('should return an Account if HttpClient return 200', () async {
+  test('should return an Account if IHttpClient return 200', () async {
     final accessToken = faker.guid.guid();
     mockHttpData({'token': accessToken});
 
@@ -85,7 +85,7 @@ void main() {
     expect(account!.token, accessToken);
   });
 
-  test('should throw UnexpectedError if HttpClient return 200 with invalid',
+  test('should throw UnexpectedError if IHttpClient return 200 with invalid',
       () async {
     mockHttpData({'invalid_key': 'invalid_value'});
 

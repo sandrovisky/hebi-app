@@ -3,34 +3,39 @@ import 'dart:convert';
 
 import './/data/http/http.dart';
 
-class HttpAdapter implements HttpClient {
+class HttpAdapter implements IHttpClient {
   final Client client;
 
   HttpAdapter(this.client);
 
-  Future<dynamic> request(
-      {required String url,
-      required String method,
-      Map? body,
-      Map? headers}) async {
+  @override
+  Future<dynamic> request({
+    required String url,
+    required String method,
+    Map? body,
+    Map? headers,
+  }) async {
     final defaultHeaders = headers?.cast<String, String>() ?? {}
       ..addAll(
-          {'content-type': 'application/json', 'accept': 'application/json'});
+        {'content-type': 'application/json', 'accept': 'application/json'},
+      );
     final jsonBody = body != null ? jsonEncode(body) : null;
-    var response = Response('', 500);
-    Future<Response>? futureResponse;
+    Response response = Response('', 500);
     try {
       if (method == 'post') {
-        futureResponse = client.post(Uri.parse(url),
-            headers: defaultHeaders, body: jsonBody);
+        response = await client.post(
+          Uri.parse(url),
+          headers: defaultHeaders,
+          body: jsonBody,
+        );
       } else if (method == 'get') {
-        futureResponse = client.get(Uri.parse(url), headers: defaultHeaders);
+        response = await client.get(Uri.parse(url), headers: defaultHeaders);
       } else if (method == 'put') {
-        futureResponse =
-            client.put(Uri.parse(url), headers: defaultHeaders, body: jsonBody);
-      }
-      if (futureResponse != null) {
-        response = await futureResponse.timeout(Duration(seconds: 10));
+        response = await client.put(
+          Uri.parse(url),
+          headers: defaultHeaders,
+          body: jsonBody,
+        );
       }
     } catch (error) {
       throw HttpError.serverError;

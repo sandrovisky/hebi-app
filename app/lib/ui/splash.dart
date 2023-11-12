@@ -2,9 +2,8 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import 'package:hebi/ui/pages/routers/routers.dart';
-
-import './/core/device_info.dart';
+import './/core/core.dart';
+import './/ui/routers/routers.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);

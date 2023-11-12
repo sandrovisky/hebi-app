@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import './/presentation/blocs/blocs.dart';
+import './/ui/helpers/errors/errors.dart';
 
 class CodeInput extends StatelessWidget {
   const CodeInput({Key? key, required this.onChanged}) : super(key: key);
@@ -7,31 +11,30 @@ class CodeInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      keyboardType: TextInputType.number,
-      onChanged: onChanged,
-      decoration: InputDecoration(
-        errorText: ' ',
-        helperText: ' ',
-        border: const OutlineInputBorder(),
-        contentPadding: const EdgeInsets.fromLTRB(20, 0, 10, 0),
-        hintText: "Codigo",
-        filled: true,
-        fillColor: Colors.white,
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.black, width: 2.0),
-          borderRadius: BorderRadius.circular(10.0),
+    final state = context.read<LoginBloc>().state;
+
+    if (state is FormLoginState) {
+      return TextFormField(
+        keyboardType: TextInputType.number,
+        onChanged: onChanged,
+        decoration: InputDecoration(
+          errorText: state.userError?.description,
+          helperText: ' ',
+          border: const OutlineInputBorder(),
+          contentPadding: const EdgeInsets.fromLTRB(20, 0, 10, 0),
+          hintText: "Codigo",
+          filled: true,
+          fillColor: Colors.white,
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: Colors.black, width: 2.0),
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          enabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.black, width: 2.0),
+          ),
         ),
-        enabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.black, width: 2.0),
-        ),
-      ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Campo obrigatório!';
-        }
-        return null;
-      },
-    );
+      );
+    }
+    return Container();
   }
 }

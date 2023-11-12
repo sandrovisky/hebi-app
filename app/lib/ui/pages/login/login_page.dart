@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import './/presentation/blocs/login/bloc.dart';
-import './/presentation/blocs/login/events.dart';
+import './/presentation/blocs/blocs.dart';
 
 import './components/components.dart';
 

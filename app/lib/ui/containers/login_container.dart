@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import './/presentation/blocs/login/login.dart';
-import './/ui/pages/error/error.dart';
-
-import '../pages/pages.dart';
+import './/ui/pages/pages.dart';
+import './/presentation/blocs/blocs.dart';
 
 class LoginContainer extends StatelessWidget {
   const LoginContainer({Key? key}) : super(key: key);
@@ -14,18 +12,17 @@ class LoginContainer extends StatelessWidget {
     final bloc = context.watch<LoginBloc>();
     final state = bloc.state;
 
-    void clearError() {
-      bloc.add(ClearErrorLoginEvent());
-    }
-
-    if (state is LoadingLoginState) return const LoginLoadingPage();
-
-    if (state is ErrorLoginState) {
-      return ErrorPage(error: state, onPressed: clearError);
-    }
+    if (state is LoadingLoginState) return const LoadingPage();
 
     if (state is FormLoginState) return LoginPage(bloc: bloc);
 
-    return ErrorPage(onPressed: clearError);
+    if (state is ErrorLoginState) {
+      return ErrorPage(
+        error: state,
+        onPressed: () => bloc.add(ClearErrorLoginEvent()),
+      );
+    }
+
+    return ErrorPage(onPressed: () => bloc.add(ClearErrorLoginEvent()));
   }
 }
