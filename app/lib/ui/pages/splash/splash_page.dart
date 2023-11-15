@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 import 'package:localstorage/localstorage.dart';
 
 import './/core/core.dart';
-import './/ui/routers/routers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -16,17 +15,23 @@ class SplashScreen extends StatelessWidget {
     final storage = context.read<LocalStorage>();
 
     return Center(
-      child: AnimatedSplashScreen(
+      child: AnimatedSplashScreen.withScreenRouteFunction(
         splash: Center(
           child: Image.asset(
             'assets/images/snake.png',
           ),
         ),
         splashIconSize: MediaQuery.sizeOf(context).width,
-        nextScreen: const LoginRouter(),
-        function: () async {
+        screenRouteFunction: () async {
           await deviceInfo.init();
           await storage.ready;
+
+          final defaultParameter = {'apiURL': 'http://192.168.1.2:7000/api'};
+
+          for (var keyMap in defaultParameter.keys) {
+            await storage.setItem(keyMap, defaultParameter[keyMap]);
+          }
+          return '/login';
         },
       ),
     );

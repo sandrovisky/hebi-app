@@ -3,6 +3,8 @@ import './/ui/pages/error/error.dart';
 
 sealed class LoginState {}
 
+class InitialLoginState extends LoginState {}
+
 class LoadingLoginState extends LoginState {}
 
 class ErrorLoginState extends LoginState implements ErrorState {
@@ -38,12 +40,40 @@ class FormLoginState extends LoginState {
     UIError? passwordError,
     bool? isFormValid,
   }) {
+    late UIError? newUserError;
+    late UIError? newPasswordError;
+
+    if (userError is UIError) {
+      if (userError == UIError.noError) {
+        newUserError = null;
+      } else {
+        newUserError = userError;
+      }
+    } else {
+      newUserError = this.userError;
+    }
+
+    if (passwordError is UIError) {
+      if (passwordError == UIError.noError) {
+        newPasswordError = null;
+      } else {
+        newPasswordError = passwordError;
+      }
+    } else {
+      newPasswordError = this.passwordError;
+    }
+
     return FormLoginState(
       user: user ?? this.user,
       password: password ?? this.password,
-      userError: userError ?? this.userError,
-      passwordError: passwordError ?? this.passwordError,
+      userError: newUserError,
+      passwordError: newPasswordError,
       isFormValid: isFormValid ?? this.isFormValid,
     );
   }
+
+  Map mapToValidate() => {
+        'user': user,
+        'password': password,
+      };
 }

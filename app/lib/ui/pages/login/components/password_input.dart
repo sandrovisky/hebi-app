@@ -4,22 +4,44 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import './/presentation/blocs/blocs.dart';
 import './/ui/helpers/errors/errors.dart';
 
-class PasswordInput extends StatelessWidget {
-  const PasswordInput({Key? key, required this.onChanged}) : super(key: key);
+class PasswordInput extends StatefulWidget {
+  const PasswordInput({Key? key}) : super(key: key);
 
-  final Function(String) onChanged;
+  @override
+  State<PasswordInput> createState() => _PasswordInputState();
+}
+
+class _PasswordInputState extends State<PasswordInput> {
+  bool obscure = true;
 
   @override
   Widget build(BuildContext context) {
-    final state = context.read<LoginBloc>().state;
+    final bloc = context.watch<LoginBloc>();
+    final state = bloc.state;
+
     if (state is FormLoginState) {
-      return Padding(
-        padding: const EdgeInsets.only(top: 15),
+      return SizedBox(
+        height: 60,
         child: TextFormField(
-          obscureText: true,
+          initialValue: state.password,
+          obscureText: obscure,
           keyboardType: TextInputType.number,
-          onChanged: onChanged,
+          onChanged: (password) => bloc.add(
+            PasswordChangeLoginEvent(password),
+          ),
           decoration: InputDecoration(
+            suffixIcon: IconButton(
+              icon: Icon(
+                obscure
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
+              ),
+              onPressed: () {
+                setState(() {
+                  obscure = !obscure;
+                });
+              },
+            ),
             errorText: state.passwordError?.description,
             border: const OutlineInputBorder(),
             contentPadding: const EdgeInsets.fromLTRB(20, 0, 10, 5),

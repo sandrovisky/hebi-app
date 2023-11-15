@@ -5,7 +5,7 @@ class RemoteAccountModel {
   final bool isSalesman;
   final String salesman;
   final String customer;
-  final String reference;
+  final String logged;
   final String token;
 
   RemoteAccountModel({
@@ -13,7 +13,7 @@ class RemoteAccountModel {
     required this.isSalesman,
     required this.salesman,
     required this.customer,
-    required this.reference,
+    required this.logged,
     required this.token,
   });
 
@@ -21,7 +21,7 @@ class RemoteAccountModel {
         customer: customer,
         isAdmin: isAdmin,
         isSalesman: isSalesman,
-        reference: reference,
+        logged: logged,
         salesman: salesman,
         token: token,
       );
@@ -32,7 +32,7 @@ class RemoteAccountModel {
       'isSalesman': isSalesman,
       'salesman': salesman,
       'customer': customer,
-      'reference': reference,
+      'logged': logged,
       'token': token,
     };
   }
@@ -43,7 +43,7 @@ class RemoteAccountModel {
       isSalesman: map['isSalesman'] as bool,
       salesman: map['salesman'] as String,
       customer: map['customer'] as String,
-      reference: map['reference'] as String,
+      logged: map['logged'] as String,
       token: map['token'] as String,
     );
   }

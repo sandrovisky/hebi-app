@@ -17,12 +17,9 @@ import './/infra/http/http.dart';
 import './/presentation/blocs/blocs.dart';
 
 void main() {
-  final defaultParameter = {'apiURL': 'http://hebi.com.br/api/'};
-
   runApp(MultiProvider(
     providers: [
-      Provider<LocalStorage>(
-          create: (_) => LocalStorage('hebi', null, defaultParameter)),
+      Provider<LocalStorage>(create: (_) => LocalStorage('hebi')),
       Provider<ICacheStorage>(
         create: (context) => LocalStorageAdapter(localStorage: context.read()),
       ),

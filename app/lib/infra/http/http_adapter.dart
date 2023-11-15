@@ -17,7 +17,11 @@ class HttpAdapter implements IHttpClient {
   }) async {
     final defaultHeaders = headers?.cast<String, String>() ?? {}
       ..addAll(
-        {'content-type': 'application/json', 'accept': 'application/json'},
+        {
+          'content-type': 'application/json',
+          'accept': 'application/json',
+          'app': 'true',
+        },
       );
     final jsonBody = body != null ? jsonEncode(body) : null;
     Response response = Response('', 500);
@@ -28,6 +32,7 @@ class HttpAdapter implements IHttpClient {
           headers: defaultHeaders,
           body: jsonBody,
         );
+        print(response.body);
       } else if (method == 'get') {
         response = await client.get(Uri.parse(url), headers: defaultHeaders);
       } else if (method == 'put') {
@@ -38,6 +43,7 @@ class HttpAdapter implements IHttpClient {
         );
       }
     } catch (error) {
+      print(error);
       throw HttpError.serverError;
     }
     return _handleResponse(response);

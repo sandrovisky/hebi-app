@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import './/ui/pages/pages.dart';
 import './/presentation/blocs/blocs.dart';
@@ -9,20 +9,25 @@ class LoginContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.watch<LoginBloc>();
-    final state = bloc.state;
+    final bloc = context.read<LoginBloc>();
+    return BlocConsumer<LoginBloc, LoginState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        if (state is LoadingLoginState) return const LoadingPage();
 
-    if (state is LoadingLoginState) return const LoadingPage();
+        if (state is FormLoginState) return const LoginPage();
 
-    if (state is FormLoginState) return LoginPage(bloc: bloc);
+        if (state is ErrorLoginState) {
+          return ErrorPage(
+            error: state,
+            onPressed: () => bloc.add(ClearErrorLoginEvent()),
+          );
+        }
 
-    if (state is ErrorLoginState) {
-      return ErrorPage(
-        error: state,
-        onPressed: () => bloc.add(ClearErrorLoginEvent()),
-      );
-    }
-
-    return ErrorPage(onPressed: () => bloc.add(ClearErrorLoginEvent()));
+        return ErrorPage(
+          onPressed: () => bloc.add(ClearErrorLoginEvent()),
+        );
+      },
+    );
   }
 }

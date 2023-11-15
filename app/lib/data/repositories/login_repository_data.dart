@@ -16,9 +16,10 @@ class LoginRepositoryData implements ILoginRepository {
   @override
   Future<AccountEntity> auth(AuthenticationParams params) async {
     try {
+      await Future.delayed(Duration(seconds: 3));
       final api = await cacheStorage.fetch('apiURL');
       final httpResponse = await httpClient.request(
-        url: '$api/login',
+        url: '$api/v2/android/login/',
         method: 'post',
         body: RemoteAuthenticationParams.fromDomain(params).toJson(),
       );

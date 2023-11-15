@@ -3,7 +3,8 @@ enum UIError {
   invalidField,
   unexpected,
   invalidCredentials,
-  onlyNumberField
+  onlyNumberField,
+  noError
 }
 
 extension UIErrorExtension on UIError {
