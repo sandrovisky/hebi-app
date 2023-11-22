@@ -10,11 +10,11 @@ class LoginButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = context.watch<LoginBloc>();
     final state = bloc.state as FormLoginState;
-    print(state.isFormValid);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: ElevatedButton(
-        style: ElevatedButton.styleFrom(minimumSize: Size(100, 50)),
+        style: ElevatedButton.styleFrom(minimumSize: const Size(100, 50)),
         onPressed: state.isFormValid ? () => bloc.add(AuthLoginEvent()) : null,
         child: const Text('LOGIN'),
       ),

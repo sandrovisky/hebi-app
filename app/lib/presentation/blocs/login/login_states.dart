@@ -1,3 +1,4 @@
+import './/domain/entities/entities.dart';
 import './/ui/helpers/errors/errors.dart';
 import './/ui/pages/error/error.dart';
 
@@ -16,7 +17,11 @@ class ErrorLoginState extends LoginState implements ErrorState {
   String get message => error;
 }
 
-class SuccessLoginState extends LoginState {}
+class SuccessLoginState extends LoginState {
+  final AccountEntity entity;
+
+  SuccessLoginState(this.entity);
+}
 
 class FormLoginState extends LoginState {
   final String user;

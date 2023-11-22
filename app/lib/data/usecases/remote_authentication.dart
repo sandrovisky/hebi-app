@@ -5,7 +5,7 @@ import './/domain/repositories/repositories.dart';
 import './/domain/usecases/usecases.dart';
 
 class RemoteAuthentication implements Authentication {
-  final ILoginRepository loginRepository;
+  final IAuthRepository loginRepository;
 
   RemoteAuthentication({required this.loginRepository});
 
@@ -38,5 +38,5 @@ class RemoteAuthenticationParams {
     );
   }
 
-  Map toJson() => {'user': user, 'password': password};
+  Map toMap() => {'user': user, 'password': password};
 }

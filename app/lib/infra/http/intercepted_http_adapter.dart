@@ -1,14 +1,14 @@
-import 'package:hebi/data/cache/cache.dart';
 import 'package:http/http.dart';
 import 'dart:convert';
 
+import './/data/cache/cache.dart';
 import './/data/http/http.dart';
 
-class HttpAdapter implements IHttpClient {
+class InterceptedHttpAdapter implements IHttpClient {
   final Client client;
   final ICacheStorage storage;
 
-  HttpAdapter({required this.client, required this.storage});
+  InterceptedHttpAdapter({required this.client, required this.storage});
 
   @override
   Future<dynamic> request({

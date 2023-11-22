@@ -10,11 +10,15 @@ class LoginContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = context.read<LoginBloc>();
+    final blocAuth = context.read<AuthBloc>();
     return BlocConsumer<LoginBloc, LoginState>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (state is SuccessLoginState) {
+          blocAuth.add(ChangeAccountAuthEvent(state.entity));
+          Navigator.of(context).pushReplacementNamed('/home');
+        }
+      },
       builder: (context, state) {
-        if (state is LoadingLoginState) return const LoadingPage();
-
         if (state is FormLoginState) return const LoginPage();
 
         if (state is ErrorLoginState) {
@@ -24,9 +28,7 @@ class LoginContainer extends StatelessWidget {
           );
         }
 
-        return ErrorPage(
-          onPressed: () => bloc.add(ClearErrorLoginEvent()),
-        );
+        return const LoadingPage();
       },
     );
   }

@@ -1,20 +1,23 @@
 import 'package:bloc/bloc.dart';
-import 'package:hebi/domain/helpers/domain_error.dart';
-import 'package:hebi/ui/helpers/errors/errors.dart';
+import 'package:hebi/data/cache/cache.dart';
 
+import './/domain/helpers/helpers.dart';
 import './/domain/usecases/usecases.dart';
 import './/presentation/protocols/protocols.dart';
+import './/ui/helpers/errors/errors.dart';
 
 import './login.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final Authentication authentication;
+  final ICacheStorage storage;
   final Validation validation;
 
   FormLoginState form = FormLoginState();
 
   LoginBloc({
     required this.authentication,
+    required this.storage,
     required this.validation,
   }) : super(FormLoginState()) {
     on<PasswordChangeLoginEvent>(_passwordEvent);
@@ -50,11 +53,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         user: form.user,
         password: form.password,
       );
-      await authentication.auth(params);
+      final user = await authentication.auth(params);
+      await storage.save(key: 'user', value: user.toMap());
+      emit(SuccessLoginState(user));
+      form = FormLoginState();
       emit(form);
     } on DomainError catch (e) {
+      form = form.copyWith(password: '');
       emit(ErrorLoginState(e.description));
     } catch (e) {
+      form = form.copyWith(password: '');
       emit(ErrorLoginState(e.toString()));
     }
   }
