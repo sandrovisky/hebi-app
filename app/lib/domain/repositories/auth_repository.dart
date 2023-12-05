@@ -1,7 +1,7 @@
 import './/domain/entities/account_entity.dart';
 import './/domain/usecases/usecases.dart';
 
-abstract class IAuthRepository {
+abstract class IAuthRepositoryy {
   Future<AccountEntity> auth(AuthenticationParams authenticationParams);
-  Future<void> checkUser(AccountEntity accountEntity);
+  Future<void> validateToken(AccountEntity accountEntity);
 }

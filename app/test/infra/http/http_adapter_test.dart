@@ -28,7 +28,6 @@ class HttpAdapter {
       headers: headers,
       body: jsonBody,
     );
-    print(response.statusCode);
     switch (response.statusCode) {
       case 204:
         return null;

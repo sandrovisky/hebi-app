@@ -4,5 +4,12 @@ enum HttpError {
   serverError,
   unauthorized,
   invalidData,
-  forbidden
+  forbidden,
+  socketError
+}
+
+class Http401Error {
+  final String code;
+
+  Http401Error(this.code);
 }

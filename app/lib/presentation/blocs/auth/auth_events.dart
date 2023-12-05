@@ -8,4 +8,4 @@ class ChangeAccountAuthEvent extends AuthEvent {
   ChangeAccountAuthEvent(this.accountEntity);
 }
 
-class CheckAccountAuthEvent extends AuthEvent {}
+class CheckSessionAuthEvent extends AuthEvent {}

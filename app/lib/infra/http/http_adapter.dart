@@ -1,7 +1,10 @@
-import 'package:hebi/data/cache/cache.dart';
-import 'package:http/http.dart';
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+
+import './/data/cache/cache.dart';
 import './/data/http/http.dart';
 
 class HttpAdapter implements IHttpClient {
@@ -15,10 +18,10 @@ class HttpAdapter implements IHttpClient {
     required String url,
     required String method,
     Map? body,
-    Map? headers,
+    Map<String, String>? headers,
   }) async {
     final user = (await storage.fetch('user'));
-    final defaultHeaders = headers?.cast<String, String>() ?? {};
+    Map<String, String> defaultHeaders = headers ?? {};
     if (user != null) {
       defaultHeaders.addAll(
         {
@@ -50,7 +53,11 @@ class HttpAdapter implements IHttpClient {
           body: jsonBody,
         );
       }
+    } on SocketException catch (error) {
+      debugPrint('httpadapter: $error');
+      throw HttpError.socketError;
     } catch (error) {
+      debugPrint('httpadapter: $error');
       throw HttpError.serverError;
     }
     return await _handleResponse(response);
@@ -65,7 +72,8 @@ class HttpAdapter implements IHttpClient {
       case 400:
         throw HttpError.badRequest;
       case 401:
-        throw HttpError.unauthorized;
+        final code = jsonDecode(response.body)['code'];
+        throw Http401Error(code);
       case 403:
         throw HttpError.forbidden;
       case 404:

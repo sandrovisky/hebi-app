@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:hebi/data/cache/cache.dart';
+import 'package:hebi/domain/helpers/helpers.dart';
 
-import './/domain/helpers/helpers.dart';
+import './/data/cache/cache.dart';
 import './/domain/usecases/usecases.dart';
 import './/presentation/protocols/protocols.dart';
 import './/ui/helpers/errors/errors.dart';
@@ -56,14 +56,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       final user = await authentication.auth(params);
       await storage.save(key: 'user', value: user.toMap());
       emit(SuccessLoginState(user));
+      await Future.delayed(const Duration(seconds: 1));
       form = FormLoginState();
       emit(form);
-    } on DomainError catch (e) {
+    } on DomainError catch (error) {
+      emit(ErrorLoginState(error));
+    } catch (error) {
+      emit(ErrorLoginState(DomainError.unexpected));
+    } finally {
       form = form.copyWith(password: '');
-      emit(ErrorLoginState(e.description));
-    } catch (e) {
-      form = form.copyWith(password: '');
-      emit(ErrorLoginState(e.toString()));
+      emit(form);
     }
   }
 

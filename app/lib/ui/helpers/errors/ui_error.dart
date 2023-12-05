@@ -1,27 +1,12 @@
 enum UIError {
-  requiredField,
-  invalidField,
-  unexpected,
-  invalidCredentials,
-  onlyNumberField,
-  noError
-}
+  requiredField('Campo Obrigatório.'),
+  invalidField('Campo Inválido.'),
+  unexpected('Erro Inesperado'),
+  invalidCredentials('Verifique usuário e senha.'),
+  onlyNumberField('Deve conter apenas números.'),
+  noError('');
 
-extension UIErrorExtension on UIError {
-  String get description {
-    switch (this) {
-      case UIError.requiredField:
-        return 'Campo Obrigatório.';
-      case UIError.invalidField:
-        return 'Campo Inválido.';
-      case UIError.invalidCredentials:
-        return 'Verifique usuário e senha.';
-      case UIError.onlyNumberField:
-        return 'Deve conter apenas números.';
-      case UIError.unexpected:
-        return 'Erro Inesperado';
-      default:
-        return 'Erro Inesperado';
-    }
-  }
+  final String description;
+
+  const UIError(this.description);
 }

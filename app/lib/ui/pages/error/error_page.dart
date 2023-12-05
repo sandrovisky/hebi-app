@@ -1,26 +1,24 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import './/ui/pages/error/state.dart';
 import 'package:flutter/material.dart';
 
-class ErrorPage extends StatelessWidget {
-  const ErrorPage({
-    Key? key,
-    this.error,
-    required this.onPressed,
-  }) : super(key: key);
+import './/ui/helpers/errors/errors.dart';
 
-  final ErrorState? error;
-  final Function() onPressed;
+class ErrorPage extends StatelessWidget {
+  const ErrorPage({Key? key, required this.error}) : super(key: key);
+
+  final UIError error;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text(error?.message ?? 'Erro Desconhecido.'),
-            ElevatedButton(onPressed: onPressed, child: const Text('Voltar'))
+            Text(error.description),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Voltar'),
+            )
           ],
         ),
       ),

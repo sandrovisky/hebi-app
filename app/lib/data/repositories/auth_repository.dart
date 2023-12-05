@@ -1,21 +1,22 @@
+import 'package:flutter/material.dart';
+
 import './/data/cache/cache.dart';
 import './/data/http/http.dart';
 import './/data/models/models.dart';
-import './/data/usecases/remote_authentication.dart';
-import './/domain/entities/account_entity.dart';
+import './/data/repositories/repositories.dart';
+import './/data/usecases/usecases.dart';
+import './/domain/entities/entities.dart';
 import './/domain/helpers/helpers.dart';
 import './/domain/repositories/repositories.dart';
 import './/domain/usecases/authentication.dart';
 
-class AuthRepositoryData implements IAuthRepository {
-  final IHttpClient httpClientWithInterceptor;
+class AuthRepository extends BaseRepository implements IAuthRepositoryy {
   final IHttpClient httpClient;
   final ICacheStorage cacheStorage;
 
-  AuthRepositoryData({
+  AuthRepository({
     required this.httpClient,
     required this.cacheStorage,
-    required this.httpClientWithInterceptor,
   });
 
   @override
@@ -27,24 +28,36 @@ class AuthRepositoryData implements IAuthRepository {
         method: 'post',
         body: RemoteAuthenticationParams.fromDomain(params).toMap(),
       );
+
       return RemoteAccountModel.fromMap(httpResponse).toEntity();
+    } on Http401Error catch (error) {
+      throw handle401Error(error);
     } on HttpError catch (error) {
-      throw error == HttpError.unauthorized
-          ? DomainError.invalidCredentials
-          : DomainError.unexpected;
+      if (error == HttpError.socketError) {
+        throw DomainError.socketAdapterError;
+      }
+      throw DomainError.unexpected;
     }
   }
 
   @override
-  Future<void> checkUser(AccountEntity accountEntity) async {
+  Future<void> validateToken(AccountEntity accountEntity) async {
     try {
       final api = await cacheStorage.fetch('apiURL');
-      await httpClientWithInterceptor.request(
+      await httpClient.request(
         url: '$api/v2/android/check-token/',
         method: 'get',
       );
       return;
-    } catch (e) {
+    } on Http401Error catch (error) {
+      throw handle401Error(error);
+    } on HttpError catch (error) {
+      if (error == HttpError.socketError) {
+        throw DomainError.socketAdapterError;
+      }
+      debugPrint('authRepository: $error');
+      throw DomainError.unexpected;
+    } catch (error) {
       throw DomainError.unexpected;
     }
   }

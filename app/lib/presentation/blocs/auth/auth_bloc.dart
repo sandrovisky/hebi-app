@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:hebi/data/cache/cache.dart';
+import 'package:hebi/domain/helpers/helpers.dart';
 import 'package:hebi/domain/repositories/repositories.dart';
 
 import './/domain/entities/entities.dart';
@@ -8,13 +9,13 @@ import './auth.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final ICacheStorage storage;
-  final IAuthRepository repository;
+  final IAuthRepositoryy repository;
 
   AuthBloc({required this.storage, required this.repository})
       : super(LoadingAuthState()) {
     on<ChangeAccountAuthEvent>(_changeAccount);
 
-    on<CheckAccountAuthEvent>(_checkAccount);
+    on<CheckSessionAuthEvent>(_validateToken);
   }
 
   AccountEntity? accountEntity;
@@ -28,17 +29,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  _checkAccount(CheckAccountAuthEvent event, Emitter<AuthState> emit) async {
+  _validateToken(CheckSessionAuthEvent event, Emitter<AuthState> emit) async {
     try {
       final user = await storage.fetch('user');
-      if (user != null) {
-        await _logout(emit);
-      } else {
-        await repository.checkUser(AccountEntity.fromMap(user));
-        accountEntity = AccountEntity.fromMap(user);
-        emit(LoggedInAuthState());
-      }
-    } catch (e) {
+
+      if (user == null) return emit(LoggedOutAuthState());
+
+      await repository.validateToken(AccountEntity.fromMap(user));
+      accountEntity = AccountEntity.fromMap(user);
+      emit(LoggedInAuthState());
+    } on DomainError catch (error) {
+      emit(ErrorAuthState(error));
+    } catch (_) {
       await _logout(emit);
     }
   }

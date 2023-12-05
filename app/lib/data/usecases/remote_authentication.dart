@@ -1,23 +1,22 @@
-import './/data/http/http.dart';
+import 'package:flutter/material.dart';
+
 import './/domain/entities/entities.dart';
-import './/domain/helpers/helpers.dart';
 import './/domain/repositories/repositories.dart';
 import './/domain/usecases/usecases.dart';
 
 class RemoteAuthentication implements Authentication {
-  final IAuthRepository loginRepository;
+  final IAuthRepositoryy authRepository;
 
-  RemoteAuthentication({required this.loginRepository});
+  RemoteAuthentication({required this.authRepository});
 
   @override
   Future<AccountEntity> auth(AuthenticationParams params) async {
     try {
-      final accountEntity = await loginRepository.auth(params);
+      final accountEntity = await authRepository.auth(params);
       return accountEntity;
-    } on HttpError catch (error) {
-      throw error == HttpError.unauthorized
-          ? DomainError.invalidCredentials
-          : DomainError.unexpected;
+    } catch (error) {
+      debugPrint('remoteAuthentication: $error');
+      rethrow;
     }
   }
 }

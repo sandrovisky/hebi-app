@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hebi/validation/validation.dart';
 import 'package:http/http.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:provider/provider.dart';
-import 'package:http_interceptor/http_interceptor.dart';
 
 import './/core/core.dart';
 import './/data/cache/cache.dart';
@@ -16,6 +14,7 @@ import './/domain/usecases/usecases.dart';
 import './/infra/cache/cache.dart';
 import './/infra/http/http.dart';
 import './/presentation/blocs/blocs.dart';
+import './/validation/validation.dart';
 
 void main() {
   runApp(MultiProvider(
@@ -24,25 +23,25 @@ void main() {
       Provider<ICacheStorage>(
         create: (context) => LocalStorageAdapter(localStorage: context.read()),
       ),
+      ChangeNotifierProvider<ThemeController>(
+        create: (context) => ThemeController(storage: context.read()),
+      ),
       Provider<IHttpClient>(
-        create: (context) => InterceptedHttpAdapter(
+        create: (context) => HttpAdapter(
           storage: context.read(),
-          client: InterceptedClient.build(
-            interceptors: [RedirectOn401Interceptor(context.read())],
-          ),
+          client: Client(),
         ),
       ),
       Provider<DeviceInfo>(create: (_) => DeviceInfo()),
-      Provider<IAuthRepository>(
-        create: (context) => AuthRepositoryData(
+      Provider<IAuthRepositoryy>(
+        create: (context) => AuthRepository(
           cacheStorage: context.read(),
-          httpClient: HttpAdapter(client: Client(), storage: context.read()),
-          httpClientWithInterceptor: context.read(),
+          httpClient: context.read(),
         ),
       ),
       Provider<Authentication>(
         create: (context) => RemoteAuthentication(
-          loginRepository: context.read(),
+          authRepository: context.read(),
         ),
       ),
       BlocProvider<LoginBloc>(
@@ -64,6 +63,7 @@ void main() {
           storage: context.read(),
         ),
       ),
+      BlocProvider<SettingsBloc>(create: (context) => SettingsBloc()),
     ],
     child: const HebiApp(),
   ));
@@ -74,12 +74,14 @@ class HebiApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = context.watch<ThemeController>();
+
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       navigatorKey: NavigationService.navigatorKey,
       title: 'HebiApp',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: controller.value.theme,
+      themeMode: controller.value.themeMode,
       initialRoute: Routers.initialRoute,
       onGenerateRoute: Routers.generateRoutes,
     );

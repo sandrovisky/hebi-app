@@ -1,6 +1,6 @@
 import './/domain/entities/entities.dart';
+import './/domain/helpers/helpers.dart';
 import './/ui/helpers/errors/errors.dart';
-import './/ui/pages/error/error.dart';
 
 sealed class LoginState {}
 
@@ -8,13 +8,10 @@ class InitialLoginState extends LoginState {}
 
 class LoadingLoginState extends LoginState {}
 
-class ErrorLoginState extends LoginState implements ErrorState {
-  final String error;
+class ErrorLoginState extends LoginState {
+  final DomainError error;
 
   ErrorLoginState(this.error);
-
-  @override
-  String get message => error;
 }
 
 class SuccessLoginState extends LoginState {

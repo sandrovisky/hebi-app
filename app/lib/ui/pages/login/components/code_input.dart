@@ -23,18 +23,7 @@ class CodeInput extends StatelessWidget {
           ),
           decoration: InputDecoration(
             errorText: state.userError?.description,
-            border: const OutlineInputBorder(),
-            contentPadding: const EdgeInsets.fromLTRB(20, 0, 10, 0),
             hintText: "Codigo",
-            filled: true,
-            fillColor: Colors.white,
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.black, width: 2.0),
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            enabledBorder: const OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black, width: 2.0),
-            ),
           ),
         ),
       );
