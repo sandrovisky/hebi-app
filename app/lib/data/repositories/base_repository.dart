@@ -1,7 +1,7 @@
 import './/data/http/http.dart';
 import './/domain/helpers/helpers.dart';
 
-abstract class BaseRepository {
+mixin IBaseRepository {
   DomainError handle401Error(Http401Error error) {
     switch (error.code) {
       case 'user-locked':

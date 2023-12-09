@@ -1,1 +1,2 @@
-export 'auth_repository.dart';
+export './auth_repository.dart';
+export './shifts_repository.dart';

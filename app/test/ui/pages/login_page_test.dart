@@ -1,14 +1,14 @@
 import 'dart:async';
 
-import 'package:app/presentation/containers/login_container.dart';
-import 'package:app/presentation/core/basic_controller.dart';
-import 'package:app/presentation/presenters/presenters.dart';
+import 'package:hebi/presentation/containers/login_container.dart';
+import 'package:hebi/presentation/core/basic_controller.dart';
+import 'package:hebi/presentation/presenters/presenters.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import 'package:app/presentation/pages/pages.dart';
+import 'package:hebi/presentation/pages/pages.dart';
 import 'package:provider/provider.dart';
 
 class LoginPresenterSpy extends Mock implements ILoginPresenter {}

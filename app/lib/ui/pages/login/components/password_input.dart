@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import './/presentation/blocs/blocs.dart';
-import './/ui/helpers/errors/errors.dart';
+import './/presentation/blocs/login/login.dart';
 
 class PasswordInput extends StatefulWidget {
   const PasswordInput({Key? key}) : super(key: key);

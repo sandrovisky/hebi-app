@@ -4,7 +4,8 @@ enum DomainError {
   userLocked('Usuário bloqueado.', true),
   tokenExpired('Token Expirado.', true),
   tokenUnexpectedError('Falha na autenticação.', true),
-  socketAdapterError('Verifique a conexão e tente novamente.', false);
+  loginSocketAdapterError('Verifique a conexão e tente novamente.', false),
+  socketAdapterError('Verifique a conexão.', true);
 
   final String description;
   final bool shouldRedirect;

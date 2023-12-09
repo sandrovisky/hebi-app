@@ -9,7 +9,7 @@ import './auth.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final ICacheStorage storage;
-  final IAuthRepositoryy repository;
+  final IAuthRepository repository;
 
   AuthBloc({required this.storage, required this.repository})
       : super(LoadingAuthState()) {

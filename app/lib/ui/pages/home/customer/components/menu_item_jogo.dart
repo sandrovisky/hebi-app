@@ -11,7 +11,7 @@ class MenuItemJogo extends StatelessWidget {
     return MenuItem(
       title: 'JOGO',
       svgName: 'snake_2',
-      navigateTo: () => Navigator.of(context).pushNamed('/turnos'),
+      navigateTo: () => Navigator.of(context).pushNamed('/jb'),
     );
   }
 }

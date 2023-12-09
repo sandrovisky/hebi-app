@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import './/ui/pages/home/customer/components/components.dart';
+import './/presentation/blocs/auth/auth.dart';
 import './/ui/widgets/widgets.dart';
-import './/presentation/blocs/blocs.dart';
-import 'components/menu_item_jogo.dart';
 
 class CustomerPage extends StatelessWidget {
   const CustomerPage({super.key});

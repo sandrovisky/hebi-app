@@ -1,34 +1,87 @@
 import 'package:flutter/material.dart';
 import 'package:hebi/data/cache/cache.dart';
 
+const defaultInput = InputDecorationTheme(
+  border: OutlineInputBorder(),
+  contentPadding: EdgeInsets.fromLTRB(20, 0, 10, 0),
+  filled: true,
+);
+
+const cardDarkTheme = CardTheme(
+  shadowColor: Colors.white,
+  shape: RoundedRectangleBorder(
+    side: BorderSide(color: Colors.white, width: 0.25),
+    borderRadius: BorderRadius.all(Radius.circular(10)),
+  ),
+);
+
+final thumbIcon = MaterialStateProperty.resolveWith<Icon?>(
+  (Set<MaterialState> states) {
+    if (states.contains(MaterialState.selected)) {
+      return const Icon(Icons.check);
+    }
+    return const Icon(Icons.close);
+  },
+);
+
 class ThemeController extends ValueNotifier<HebiTheme> {
   final ICacheStorage storage;
 
   ThemeController({required this.storage}) : super(HebiTheme.initial()) {
-    const defaultInput = InputDecorationTheme(
-      border: OutlineInputBorder(),
-      contentPadding: EdgeInsets.fromLTRB(20, 0, 10, 0),
-      filled: true,
-    );
-
     _darkTheme = ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
       inputDecorationTheme: defaultInput,
-      cardTheme: const CardTheme(
-        shadowColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          side: BorderSide(color: Colors.white, width: 0.25),
-          borderRadius: BorderRadius.all(Radius.circular(10)),
+      cardTheme: cardDarkTheme,
+      appBarTheme: const AppBarTheme(shadowColor: Colors.white),
+      switchTheme: SwitchThemeData(
+        thumbIcon: thumbIcon,
+        thumbColor: MaterialStateProperty.resolveWith<Color?>(
+          (Set<MaterialState> states) {
+            if (states.contains(MaterialState.selected)) {
+              return Colors.green;
+            }
+
+            return Colors.red;
+          },
+        ),
+        trackColor: MaterialStateProperty.resolveWith<Color?>(
+          (Set<MaterialState> states) {
+            if (states.contains(MaterialState.selected)) {
+              return Color.fromARGB(255, 28, 87, 10);
+            }
+
+            return const Color.fromARGB(255, 95, 19, 12);
+          },
         ),
       ),
-      appBarTheme: const AppBarTheme(shadowColor: Colors.white),
     );
 
     _lightTheme = ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
       inputDecorationTheme: defaultInput,
+      switchTheme: SwitchThemeData(
+        thumbIcon: thumbIcon,
+        thumbColor: MaterialStateProperty.resolveWith<Color?>(
+          (Set<MaterialState> states) {
+            if (states.contains(MaterialState.selected)) {
+              return const Color.fromARGB(255, 104, 219, 108);
+            }
+
+            return Colors.red;
+          },
+        ),
+        trackColor: MaterialStateProperty.resolveWith<Color?>(
+          (Set<MaterialState> states) {
+            if (states.contains(MaterialState.selected)) {
+              return Color.fromARGB(255, 29, 104, 41);
+            }
+
+            return Color.fromARGB(255, 128, 26, 16);
+          },
+        ),
+      ),
     );
 
     _customTheme = _lightTheme;
@@ -178,6 +231,10 @@ class ThemeController extends ValueNotifier<HebiTheme> {
 
   void _changeThemeHeader() {
     _customTheme = _customTheme.copyWith(
+      listTileTheme: ListTileThemeData(
+          tileColor: headerColor,
+          shape: ContinuousRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)))),
       appBarTheme: _customTheme.appBarTheme.copyWith(
         backgroundColor: headerColor,
       ),
@@ -221,13 +278,17 @@ class HebiTheme {
 
   factory HebiTheme.initial() => HebiTheme(
         theme: ThemeData(
-            useMaterial3: true,
-            brightness: Brightness.light,
-            inputDecorationTheme: const InputDecorationTheme(
-              border: OutlineInputBorder(),
-              contentPadding: EdgeInsets.fromLTRB(20, 0, 10, 0),
-              filled: true,
-            )),
+          useMaterial3: true,
+          brightness: Brightness.light,
+          inputDecorationTheme: const InputDecorationTheme(
+            border: OutlineInputBorder(),
+            contentPadding: EdgeInsets.fromLTRB(20, 0, 10, 0),
+            filled: true,
+          ),
+          switchTheme: SwitchThemeData(
+            thumbIcon: thumbIcon,
+          ),
+        ),
         themeMode: ThemeMode.light,
       );
 }

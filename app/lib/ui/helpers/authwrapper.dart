@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hebi/ui/mixins/mixins.dart';
 
-import './/presentation/blocs/blocs.dart';
+import './/presentation/blocs/auth/auth.dart';
+import './/ui/mixins/mixins.dart';
 import './/ui/pages/pages.dart';
 
-class AuthWrapperPage extends StatefulWidget {
-  const AuthWrapperPage({super.key});
+class AuthWrapper extends StatefulWidget {
+  const AuthWrapper({super.key});
 
   @override
-  State<AuthWrapperPage> createState() => _AuthWrapperPageState();
+  State<AuthWrapper> createState() => _AuthWrapperState();
 }
 
-class _AuthWrapperPageState extends State<AuthWrapperPage>
-    with DomainErrorHandler {
+class _AuthWrapperState extends State<AuthWrapper> with DomainErrorHandler {
   @override
   void initState() {
     super.initState();

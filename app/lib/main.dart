@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hebi/presentation/blocs/settings/settings.dart';
 import 'package:http/http.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +14,9 @@ import './/domain/repositories/repositories.dart';
 import './/domain/usecases/usecases.dart';
 import './/infra/cache/cache.dart';
 import './/infra/http/http.dart';
-import './/presentation/blocs/blocs.dart';
+import './/presentation/blocs/auth/auth.dart';
+import './/presentation/blocs/jb/jb.dart';
+import './/presentation/blocs/login/login.dart';
 import './/validation/validation.dart';
 
 void main() {
@@ -33,16 +36,25 @@ void main() {
         ),
       ),
       Provider<DeviceInfo>(create: (_) => DeviceInfo()),
-      Provider<IAuthRepositoryy>(
+      Provider<IAuthRepository>(
         create: (context) => AuthRepository(
           cacheStorage: context.read(),
           httpClient: context.read(),
         ),
       ),
-      Provider<Authentication>(
+      Provider<IShiftsRepository>(
+        create: (context) => ShiftsRepository(
+          cacheStorage: context.read(),
+          httpClient: context.read(),
+        ),
+      ),
+      Provider<IAuthentication>(
         create: (context) => RemoteAuthentication(
           authRepository: context.read(),
         ),
+      ),
+      Provider<ICreateJb>(
+        create: (context) => RemoteCreateJb(shiftsRepository: context.read()),
       ),
       BlocProvider<LoginBloc>(
         create: (context) => LoginBloc(
@@ -62,6 +74,9 @@ void main() {
           repository: context.read(),
           storage: context.read(),
         ),
+      ),
+      BlocProvider<JBBloc>(
+        create: (context) => JBBloc(useCase: context.read()),
       ),
       BlocProvider<SettingsBloc>(create: (context) => SettingsBloc()),
     ],

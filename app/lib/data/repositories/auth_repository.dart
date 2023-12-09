@@ -10,7 +10,7 @@ import './/domain/helpers/helpers.dart';
 import './/domain/repositories/repositories.dart';
 import './/domain/usecases/authentication.dart';
 
-class AuthRepository extends BaseRepository implements IAuthRepositoryy {
+class AuthRepository with IBaseRepository implements IAuthRepository {
   final IHttpClient httpClient;
   final ICacheStorage cacheStorage;
 
@@ -34,7 +34,7 @@ class AuthRepository extends BaseRepository implements IAuthRepositoryy {
       throw handle401Error(error);
     } on HttpError catch (error) {
       if (error == HttpError.socketError) {
-        throw DomainError.socketAdapterError;
+        throw DomainError.loginSocketAdapterError;
       }
       throw DomainError.unexpected;
     }
@@ -52,10 +52,10 @@ class AuthRepository extends BaseRepository implements IAuthRepositoryy {
     } on Http401Error catch (error) {
       throw handle401Error(error);
     } on HttpError catch (error) {
+      debugPrint('authRepository: $error');
       if (error == HttpError.socketError) {
         throw DomainError.socketAdapterError;
       }
-      debugPrint('authRepository: $error');
       throw DomainError.unexpected;
     } catch (error) {
       throw DomainError.unexpected;

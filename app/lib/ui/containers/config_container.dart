@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import './/presentation/blocs/settings/settings.dart';
 import './/ui/pages/pages.dart';
-import './/presentation/blocs/blocs.dart';
 
-class ConfigContainer extends StatelessWidget {
-  const ConfigContainer({Key? key}) : super(key: key);
+class SettingsContainer extends StatelessWidget {
+  const SettingsContainer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class ConfigContainer extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        if (state is InitialSettingsState) return const ConfigPage();
+        if (state is InitialSettingsState) return const SettingsPage();
 
         return const LoadingPage();
       },

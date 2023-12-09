@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import './/presentation/blocs/blocs.dart';
-import '../mixins/mixins.dart';
+import './/presentation/blocs/login/login.dart';
+import './/presentation/blocs/auth/auth.dart';
 import './/ui/pages/pages.dart';
 
-class LoginContainer extends StatelessWidget with DomainErrorHandler {
+class LoginContainer extends StatelessWidget {
   const LoginContainer({Key? key}) : super(key: key);
 
   @override
@@ -20,8 +20,6 @@ class LoginContainer extends StatelessWidget with DomainErrorHandler {
         }
 
         if (state is ErrorLoginState) {
-          dialogDomainErrorHandler(context, state.error);
-
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(state.error.description),
           ));

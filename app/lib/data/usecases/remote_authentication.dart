@@ -4,8 +4,8 @@ import './/domain/entities/entities.dart';
 import './/domain/repositories/repositories.dart';
 import './/domain/usecases/usecases.dart';
 
-class RemoteAuthentication implements Authentication {
-  final IAuthRepositoryy authRepository;
+class RemoteAuthentication implements IAuthentication {
+  final IAuthRepository authRepository;
 
   RemoteAuthentication({required this.authRepository});
 

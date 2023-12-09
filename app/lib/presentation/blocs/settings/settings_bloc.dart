@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 
-import 'settings.dart';
+import './settings.dart';
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   SettingsBloc() : super(InitialSettingsState()) {

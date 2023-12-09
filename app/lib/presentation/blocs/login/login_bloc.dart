@@ -9,11 +9,9 @@ import './/ui/helpers/errors/errors.dart';
 import './login.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final Authentication authentication;
+  final IAuthentication authentication;
   final ICacheStorage storage;
   final Validation validation;
-
-  FormLoginState form = FormLoginState();
 
   LoginBloc({
     required this.authentication,
@@ -28,6 +26,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
     on<ClearErrorLoginEvent>(_clearError);
   }
+
+  FormLoginState form = FormLoginState();
 
   void _passwordEvent(
       PasswordChangeLoginEvent event, Emitter<LoginState> emit) {

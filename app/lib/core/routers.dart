@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import './/ui/helpers/authwrapper.dart';
 import './/ui/pages/pages.dart';
 import './/ui/routers/routers.dart';
 
@@ -9,10 +10,11 @@ class Routers {
   static Map<String, Widget Function(BuildContext, dynamic)> routes = {
     '/': (_, args) => const SplashScreen(),
     '/error': (_, args) => ErrorPage(error: args),
-    '/check': (_, args) => const AuthWrapperPage(),
+    '/check': (_, args) => const AuthWrapper(),
     '/login': (context, args) => const LoginRouter(),
     '/home': (context, args) => const HomeRouter(),
     '/config': (context, args) => const ConfigRouter(),
+    '/jb': (context, args) => const JBRouter(),
   };
 
   static Route? generateRoutes(RouteSettings settings) {
