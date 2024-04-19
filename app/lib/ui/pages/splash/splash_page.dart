@@ -28,7 +28,7 @@ class SplashScreen extends StatelessWidget {
           await deviceInfo.init();
           await storage.ready;
 
-          final defaultParameter = {'apiURL': 'http://192.168.1.100:7000/api'};
+          final defaultParameter = {'apiURL': 'http://localhost:7000/api'};
 
           for (var keyMap in defaultParameter.keys) {
             await storage.setItem(keyMap, defaultParameter[keyMap]);

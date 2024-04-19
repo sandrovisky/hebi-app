@@ -20,7 +20,9 @@ class HttpAdapter implements IHttpClient {
     Map? body,
     Map<String, String>? headers,
   }) async {
+    final api = await storage.fetch('apiURL');
     final user = (await storage.fetch('user'));
+    final parsedUrl = Uri.parse('$api$url');
     Map<String, String> defaultHeaders = headers ?? {};
     if (user != null) {
       defaultHeaders.addAll(
@@ -40,15 +42,15 @@ class HttpAdapter implements IHttpClient {
     try {
       if (method == 'post') {
         response = await client.post(
-          Uri.parse(url),
+          parsedUrl,
           headers: defaultHeaders,
           body: jsonBody,
         );
       } else if (method == 'get') {
-        response = await client.get(Uri.parse(url), headers: defaultHeaders);
+        response = await client.get(parsedUrl, headers: defaultHeaders);
       } else if (method == 'put') {
         response = await client.put(
-          Uri.parse(url),
+          parsedUrl,
           headers: defaultHeaders,
           body: jsonBody,
         );

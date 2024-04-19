@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hebi/ui/widgets/widgets.dart';
+import './/ui/widgets/widgets.dart';
 
 class MenuItemJogo extends StatelessWidget {
   const MenuItemJogo({

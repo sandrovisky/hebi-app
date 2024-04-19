@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import './/data/cache/cache.dart';
 import './/data/http/http.dart';
 import './/data/models/models.dart';
 import './/data/repositories/repositories.dart';
@@ -12,19 +11,14 @@ import './/domain/usecases/authentication.dart';
 
 class AuthRepository with IBaseRepository implements IAuthRepository {
   final IHttpClient httpClient;
-  final ICacheStorage cacheStorage;
 
-  AuthRepository({
-    required this.httpClient,
-    required this.cacheStorage,
-  });
+  AuthRepository({required this.httpClient});
 
   @override
   Future<AccountEntity> auth(AuthenticationParams params) async {
     try {
-      final api = await cacheStorage.fetch('apiURL');
       final httpResponse = await httpClient.request(
-        url: '$api/v2/android/login/',
+        url: '/v2/android/login/',
         method: 'post',
         body: RemoteAuthenticationParams.fromDomain(params).toMap(),
       );
@@ -43,9 +37,8 @@ class AuthRepository with IBaseRepository implements IAuthRepository {
   @override
   Future<void> validateToken(AccountEntity accountEntity) async {
     try {
-      final api = await cacheStorage.fetch('apiURL');
       await httpClient.request(
-        url: '$api/v2/android/check-token/',
+        url: '/v2/android/check-token/',
         method: 'get',
       );
       return;

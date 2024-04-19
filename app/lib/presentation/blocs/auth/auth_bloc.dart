@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:hebi/data/cache/cache.dart';
-import 'package:hebi/domain/helpers/helpers.dart';
-import 'package:hebi/domain/repositories/repositories.dart';
+import './/data/cache/cache.dart';
+import './/domain/helpers/helpers.dart';
+import './/domain/repositories/repositories.dart';
 
 import './/domain/entities/entities.dart';
 

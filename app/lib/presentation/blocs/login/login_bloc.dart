@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:hebi/domain/helpers/helpers.dart';
+import './/domain/helpers/helpers.dart';
 
 import './/data/cache/cache.dart';
 import './/domain/usecases/usecases.dart';

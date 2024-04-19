@@ -1,4 +1,4 @@
-import 'package:hebi/validation/validators/only_numbers_validation.dart';
+import './/validation/validators/only_numbers_validation.dart';
 
 import './protocols/protocols.dart';
 import './validators/validators.dart';

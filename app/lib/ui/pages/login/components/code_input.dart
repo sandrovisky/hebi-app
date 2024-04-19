@@ -17,9 +17,7 @@ class CodeInput extends StatelessWidget {
         child: TextFormField(
           keyboardType: TextInputType.number,
           initialValue: state.user,
-          onChanged: (user) => bloc.add(
-            UserChangeLoginEvent(user),
-          ),
+          onChanged: (user) => bloc.add(UserChangeLoginEvent(user)),
           decoration: InputDecoration(
             errorText: state.userError?.description,
             hintText: "Codigo",

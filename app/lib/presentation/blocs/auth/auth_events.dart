@@ -1,4 +1,4 @@
-import 'package:hebi/domain/entities/account_entity.dart';
+import './/domain/entities/account_entity.dart';
 
 abstract class AuthEvent {}
 
